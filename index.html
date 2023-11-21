@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <title>Celer3D | Cluster 01 </title>
+    <link href="dyHtml/screen.css" rel="stylesheet" />
+    <script src="core/webgl/babylon5.js"></script>
+    <script src="core/Celer3D.beta011.js"></script> 
+    <script src="core/base.js"></script>
+    <script src="core/scene.js"></script>
+    
+    <script src="dyHtml/api.js"></script> 
+    
+ 
+
+ 
+    <style>
+        canvas {
+            touch-action: none !important;
+            width: 100%;
+            height: 100%;
+        }
+
+        div,
+        canvas,
+        html,
+        * {
+            -webkit-user-select: none;
+        }
+
+        canvas,
+        html,
+        * {
+            overscroll-behavior: none;
+            zoom: 1. !important;
+            overflow: hidden; 
+        }
+
+        
+    </style>
+</head>
+
+<body onkeydown="if(scene)scene.keyD(event)" onkeyup="if(scene)scene.keyU(event)" 
+ ontouchmove="event.preventDefault()"
+>
+
+    <canvas class="fx t-00 r-00 w-full h-full ">
+
+    </canvas>
+    <div class="fx t-01 l-01 ">
+        <div class="log c-twhite fs-03"> Initialize ... </div>
+    </div> 
+
+    <script src="core/init.js"></script>
+</body>
+
+</html>
