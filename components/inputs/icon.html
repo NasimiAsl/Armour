@@ -1,0 +1,186 @@
+<div onmousedown="" class=" c$$color owf  nst root_drag_$$TID  rad-05  w-$$size h-$$size">
+    <div class="rt z03 w-full h-full ">
+    </div>
+    <div class="ab t-00 l-00 owf rad-50 f f-c f-ct f-at f-jb  w-full h-full ">
+        <div class=" animated l-p50 scl t-p50 w-full h-full   f-center     ">
+            <img class="rad-50 icon  rad-50 rt  w-mn-$$size  h-mn-$$size" $$src="$$images/$$icon" />
+        </div>
+        <div class="  b-00 txt l-00 w-full f-center rt fs-03 c-t$$color">$$title</div>
+    </div>
+    <div class="ab t-00 l-00 owf rad-50 f f-c f-ct f-at f-jb  w-full h-full ">
+        <div class="ab z02  depth cnavy rad-50    " style="width: 0px;height: 0px;">
+
+        </div>
+    </div>
+    <div class="ab c-htrans t-00 l-00 nst z08  w-full h-full ">
+    </div>
+</div>
+/// live script
+<script>
+
+    const elm = first('.root_drag_$$TID');
+    const elm_scl = first('.root_drag_$$TID .scl');
+    const elm_txt = first('.root_drag_$$TID .txt');
+    const elm_icon = first('.root_drag_$$TID .icon');
+    const elm_depth = first('.root_drag_$$TID .depth');
+
+    var events_$$TID = {
+        status: {},
+        icon:elm_icon,
+        ctrl:elm,
+        down: function (evt, th) {
+
+            events_$$TID.status.d = 1;
+            events_$$TID.status.t = new Date().getTime();
+            events_$$TID.status.x = evt.offsetX;
+            events_$$TID.status.y = evt.offsetY;
+            events_$$TID.status.w = elm.offsetWidth;
+            events_$$TID.status.h = elm.offsetHeight;
+
+            elm.classList.remove('c$$color'.split(' ')[0]);
+            elm.classList.add('c$$downColor'.split(' ')[0]);
+
+
+
+
+            events_$$TID.onDown(events_$$TID.status);
+
+
+            window.behindLoopContainer[$$TID] = function () {
+
+                if (events_$$TID.status.d) {
+
+                    events_$$TID.status.t = def(events_$$TID.status.t, new Date().getTime());
+
+                    events_$$TID.status.dt = new Date().getTime() - events_$$TID.status.t;
+
+                    elm_depth.style.width = (events_$$TID.status.dt * 0.02) + 'px';
+                    elm_depth.style.height = (events_$$TID.status.dt * 0.02) + 'px';
+                    elm_depth.style.left = (events_$$TID.status.w / 2 - events_$$TID.status.dt * 0.02 / 2) + 'px';
+                    elm_depth.style.top = (events_$$TID.status.h / 2 - events_$$TID.status.dt * 0.02 / 2) + 'px';
+
+                    events_$$TID.onHold(events_$$TID.status);
+                }
+
+
+            }
+        },
+
+        over: function (evt, th) {
+
+            elm.classList.remove('c$$color'.split(' ')[0]);
+            elm.classList.add('c$$hoverColor'.split(' ')[0]);
+
+
+            elm_scl.classList.remove('$$animeOut'.split(' ')[0]);
+            elm_scl.classList.add('$$animeIn'.split(' ')[0]);
+
+            elm_txt.innerHTML = '$$hoverText';
+            elm_txt.classList.remove('c-t$$color'.split(' ')[0]);
+            elm_txt.classList.add('c-twhite');
+            
+
+            if ('$$animeIn'.split(' ')[1]) {
+                window.behindLoopContainer[$$TID + '_over'] = function () {
+
+
+
+                    events_$$TID.status.tHover = def(events_$$TID.status.tHover, new Date().getTime());
+
+                    events_$$TID.status.dttHover = new Date().getTime() - events_$$TID.status.tHover;
+
+                    if (events_$$TID.status.dttHover > 600) {
+                        elm_scl.classList.remove('$$animeIn'.split(' ')[0]);
+                        elm_scl.classList.add('$$animeIn'.split(' ')[1]);
+
+                        window.behindLoopContainer[$$TID + '_over'] = null;
+                        events_$$TID.status.tHover = null;
+
+                    } 
+
+                }
+            }
+
+
+
+
+        },
+        out: function (evt, th) {
+            elm.classList.add('c$$color'.split(' ')[0]);
+            elm.classList.remove('c$$hoverColor'.split(' ')[0]);
+
+            elm_txt.classList.add('c-t$$color'.split(' ')[0]);
+            elm_txt.classList.remove('c-twhite');
+
+            elm_txt.innerHTML = '$$text';
+            
+
+            elm_scl.classList.add('$$animeOut'.split(' ')[0]);
+            elm_scl.classList.remove('$$animeIn'.split(' ')[0]);
+
+            if ('$$animeIn'.split(' ')[1]) { elm_icon.classList.remove('$$animeIn'.split(' ')[1])};
+
+        },
+
+
+        up: function (evt, th) {
+
+            if (events_$$TID.status.d && !events_$$TID.status.m && events_$$TID.status.dt < 1000) {
+                events_$$TID.onClick(events_$$TID.status);
+            } else if (events_$$TID.status.d && !events_$$TID.status.m) {
+                events_$$TID.onRelease(events_$$TID.status);
+            }
+
+            events_$$TID.status.d = 0;
+            events_$$TID.status.m = 0;
+            events_$$TID.status.x = null;
+            events_$$TID.status.y = null;
+
+            elm_depth.style.width = '0px';
+            elm_depth.style.height = '0px';
+            elm_depth.style.left = (events_$$TID.status.w / 2) + 'px';
+            elm_depth.style.top = (events_$$TID.status.h / 2) + 'px';
+
+            elm.classList.add('c$$color'.split(' ')[0]);
+            elm.classList.remove('c$$downColor'.split(' ')[0]);
+
+            elm_scl.classList.add('$$animeOut'.split(' ')[0]);
+            elm_scl.classList.remove('$$animeIn'.split(' ')[0]);
+
+            if('$$animeIn'.split(' ')[1])  elm_scl.classList.remove('$$animeIn'.split(' ')[1]);
+
+            elm_txt.classList.add('c-t$$color'.split(' ')[0]);
+            elm_txt.classList.remove('c-twhite');
+            
+
+            window.behindLoopContainer[$$TID] = null;
+            window.behindLoopContainer[$$TID + '_over'] = null;
+            elm_txt.innerHTML = '$$text';
+            
+
+            events_$$TID.status.tHover = null;
+
+            events_$$TID.onUp(events_$$TID.status);
+        },
+
+
+        onClick: function () { },
+        onHold: function () { },
+        onRelease: function () { },
+        onDown: function (st) { console.log(st) },
+        onUp: function () { },
+
+    }
+
+
+    events_$$TID.out(event, elm)
+    
+    elm.addEventListener('mousedown', function (event) { events_$$TID.down(event, elm) });
+    elm.addEventListener('mouseover', function (event) { events_$$TID.over(event, elm) });
+    elm.addEventListener('mouseout', function (event) { events_$$TID.out(event, elm) });
+    elm.addEventListener('mouseup', function (event) { events_$$TID.up(event, elm) });
+
+
+
+TsID[$$TID] = events_$$TID;
+</script>

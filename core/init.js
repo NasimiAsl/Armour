@@ -29,11 +29,31 @@ var maker = function (scene, op, builder, mat, init) {
     return gb;
 }
 
+window.rootUps = [];
+window.rootMoves = [];
+
+
+window.winMove = function (evt) {
+
+    for (var ie in rootMoves) {
+        rootMoves[ie](evt);
+    }
+
+}
+
+window.winUp = function (evt) {
+
+    for (var ie in rootUps) {
+        rootUps[ie](evt);
+    }
+
+}
+
 
 function init(){ 
 
     var scene = createScene();
-    scene.clearColor = new BABYLON.Color4(0.,0.,0.,1.);
+    scene.clearColor = new BABYLON.Color4(0.15,0.0,0.25,1.);
 
     __log('Engine Ready.');
     requestAnimationFrame(function() {

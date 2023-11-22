@@ -8,18 +8,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <title>Celer3D | Cluster 01 </title>
+    <title>Armour Alpha </title>
     <link href="dyHtml/screen.css" rel="stylesheet" />
     <script src="core/webgl/babylon5.js"></script>
-    <script src="core/Celer3D.beta011.js"></script> 
+    <script src="core/Celer3D.beta011.js"></script>
     <script src="core/base.js"></script>
     <script src="core/scene.js"></script>
-    
-    <script src="dyHtml/api.js"></script> 
-    
- 
 
- 
+    <script src="dyHtml/api.js"></script>
+
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+
     <style>
         canvas {
             touch-action: none !important;
@@ -36,26 +37,69 @@
 
         canvas,
         html,
-        * {
+        body {
             overscroll-behavior: none;
             zoom: 1. !important;
-            overflow: hidden; 
+            overflow: hidden;
         }
 
-        
+
+        .icon {
+            font-family: 'Material Icons';
+            font-weight: normal;
+            font-style: normal;  
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr; 
+            /* Support for all WebKit browsers. */
+            -webkit-font-smoothing: antialiased;
+            /* Support for Safari and Chrome. */
+            text-rendering: optimizeLegibility; 
+            /* Support for Firefox. */
+            -moz-osx-font-smoothing: grayscale; 
+            /* Support for IE. */
+            font-feature-settings: 'liga';
+        }
     </style>
 </head>
 
-<body onkeydown="if(scene)scene.keyD(event)" onkeyup="if(scene)scene.keyU(event)" 
- ontouchmove="event.preventDefault()"
->
+<body onkeydown="if(scene)scene.keyD(event)" onkeyup="if(scene)scene.keyU(event)" ontouchmove="event.preventDefault()">
 
     <canvas class="fx t-00 r-00 w-full h-full ">
 
     </canvas>
     <div class="fx t-01 l-01 ">
         <div class="log c-twhite fs-03"> Initialize ... </div>
+    </div>
+
+    <div class="fx t-01  z06 rad-50 cwhite f-center  " style="left:calc(50% - 64px);">
+        <script>
+            var par = document.currentScript.parentNode;
+            loadPage('icon', par, null, 'components/inputs/',
+                { text: '', hoverText: '', animeIn: 'flip', animeOut: 'none', icon: '/logo.svg', size: '015', hoverColor: 'trwhite2 rad-50', downColor: '-itrblue rad-50', color: 'trans rad-50' },
+                function (p) {
+                    p.event.onHold = function () { __log(new Date().getTime()); }
+                }); 
+        </script>
     </div> 
+
+    <div class="fx l-005 b-01 h-p60  z06 rad-05   f-center  "  >
+        <script>
+            var par = document.currentScript.parentNode;
+            loadPage('dragArea', par, null, 'components/inputs/',
+                { text: '', hoverText: '', animeIn: 'none', animeOut: 'none', icon: '/none.svg', 
+                size: '015',hSize:'h-mn-full', backColor:'trans rad-50', radius:'005',color:'trwhite2' },
+                function (p) {
+                    p.event.onHold = function () { __log(new Date().getTime()); }
+                }); 
+        </script>
+    </div> 
+
+    
 
     <script src="core/init.js"></script>
 </body>
