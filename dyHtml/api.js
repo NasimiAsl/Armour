@@ -564,10 +564,10 @@ function initInnerContent(d, fn, fs, pms,fe) {
 
   d = d
     .replaceAll(
-      "<loader>",
-      `<img src="[#images]/preload.png?[#date]" class="h-01" onload="templateLoad('`
+      "<loader",
+      `<img src="$$images/none.svg?$$date" class="h-01" onload="elementPageLoad(this)"`
     )
-    .replaceAll("</loader>", `',this)" />`)
+    .replaceAll("></loader>", ` />`)
     .replaceAll("$$root", window.baseURL)
     .replaceAll("$$src=", "src=")  
     .replaceAll("$$date", new Date().getTime())
@@ -602,15 +602,25 @@ window.behindLoop = function () {
 }
 window.behindLoop()
 window.TsID = [];
+window.elementPageLoad = function(th){
+  var par = th.parentNode;
+  if(!th.attributes['page']) th.setAttribute('page','icon');
+  if(!th.attributes['root']) th.setAttribute('root','components/inputs/');
+  if(!th.attributes['params']) th.setAttribute('params','{}'); 
+  if(!th.oncreate) th.oncreate = null; 
+  if(th.attributes['online']) th.online = js('function(p){var element = p;var me = p.event;'+th.attributes['online'].value+'}');
+
+  
+  loadPage(th.attributes['page'].value,par,th.oncreate,th.attributes['root'].value,js(th.attributes['params'].value),th.online)
+
+}
 window.loadPage = function (page, ctl, fun, root, pms,fs) {
   dn({
     url: def(root, '/editor/htmls/') + page + '.html', success: function (d) {
       temp_baseIdentity++;
       pms = def(pms, {});
       pms.TID = temp_baseIdentity;
-      initInnerContent(d, function (d1) {
-       
-       
+      initInnerContent(d, function (d1) { 
         if (!fun) ctl.innerHTML = d1;
         else fun(ctl, d1 , pms);
       },null, pms, function(){

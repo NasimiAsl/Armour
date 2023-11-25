@@ -49,6 +49,10 @@ window.winUp = function (evt) {
 
 }
 
+/*
+onkeydown="if(scene)scene.keyD(event)" onkeyup="if(scene)scene.keyU(event)" ontouchmove="event.preventDefault()"
+*/
+
 
 function init(){ 
 
