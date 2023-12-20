@@ -578,10 +578,10 @@ dyHtml.down({
     var par = document.head;
     loadPage('head',par,function (d2,c2) {
       d2.innerHTML += c2;
-    },'/_Layout/',pageConfig);
+    },dy.layout,pageConfig);
 
     var par = document.body;
-    loadPage('body',par,null,'/_Layout/',pageConfig);
+    loadPage('body',par,null,dy.layout,pageConfig);
   }
 })
 
