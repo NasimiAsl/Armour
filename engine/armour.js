@@ -1,16 +1,16 @@
-var armour = function (canvas,camera) {
+var armour = function (canvas, camera) {
     this.canvas = canvas;
-    this.camera = def(camera,this.camera); 
- }
+    this.camera = def(camera, this.camera);
+}
 
 armour.prototype = {
     scene: null,
     canvas: null,
     engine: null,
 
-    maker: function (scene, op, builder, mat, init) {
+    maker: function (op, builder, mat, init) {
 
-        var gb = new BABYLONX.Geometry(GB.GeometryBase(op, builder, op.custom)).toMesh(scene);
+        var gb = new BABYLONX.Geometry(GB.GeometryBase(op, builder, op.custom)).toMesh(this.scene);
 
         gb.material = new BABYLONX.ShaderBuilder()
 
@@ -30,29 +30,27 @@ armour.prototype = {
         `);
 
                 return mat(me);
-            }).BuildMaterial(scene);
+            }).BuildMaterial(this.scene);
 
         if (init) init(gb, gb.material);
 
-        gb.material.setArray4('suns', scene.getSuns());
-
         return gb;
     },
-   
-    camera: function (setting) {
+    initCamera: function (scene, setting) {
         var scene = this.scene;
         // This creates and positions a free camera (non-mesh)
-        this.camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(-30, 0, 0), scene);
-        
-       
+        var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 0, 0), scene);
+        return camera;
     },
     create: function (setting) {
-      
+
+        var th = this;
+
         BABYLONX.ShaderBuilder.InitializeEngine();
         BABYLONX.GeometryBuilder.InitializeEngine();
 
         // This creates a basic Babylon Scene object (non-mesh)
-      
+
         this.engine = new BABYLON.Engine(this.canvas, true, { preserveDrawingBuffer: true });
 
         this.scene = new BABYLON.Scene(this.engine);
@@ -111,10 +109,10 @@ armour.prototype = {
 
         }
 
-       
-        scene.clearColor = new BABYLON.Color4(def(setting.color.x,0), def(setting.color.y,0), def(setting.color.z,0), def(setting.color.w,1)); 
 
-        scene.camera = this.camera(setting); 
+        scene.clearColor = new BABYLON.Color4(def(setting.color.x, 0), def(setting.color.y, 0), def(setting.color.z, 0), def(setting.color.w, 1));
+
+        this.camera = this.initCamera(scene, setting);
 
         keyCodeCheck = 0;
         kyCheck = function (ks) {
@@ -135,13 +133,14 @@ armour.prototype = {
         }
 
         scene.time = 0;
+        
 
         scene.registerBeforeRender(function () {
 
             scene.time++;
 
-            if (scene.keyFrame)
-                scene.keyFrame(scene.time);
+            if(th.keyFrame)th.keyFrame(scene.time); 
+
 
             new BABYLONX.ShaderMaterialHelper().SetUniforms(
                 scene.meshes,
@@ -153,15 +152,62 @@ armour.prototype = {
 
         });
 
-        this.engine.runRenderLoop(function () { 
+        this.engine.runRenderLoop(function () {
 
-            
-            if(!scene.pause)
-            scene.render();
+            if (!scene.pause)
+                scene.render();
         });
 
-        
+
 
         return scene;
     }
-}; 
+};
+
+GB.uvs = {};
+GB.rims = {
+    point: function (op) {
+        return {
+            count: 1, point: function (p, i) {
+                op.cus = def(op.cus, function (p, op) { op = def(op, {}); return p_ts(p, def(op.ts, {})) });
+                p.x = op.x;
+                p.y = op.y;
+                p.z = op.z;
+                return op.cus(p);
+            }
+        }
+    },
+    line2P: function (op) {
+        return {
+            count: 2, point: function (p, i) {
+                op.cus = def(op.cus, function (p, op) { op = def(op, {}); return p_ts(p, def(op.ts, {})) });
+                if (i == 0) { p.x = op.p1.x; p.y = op.p1.y; p.z = op.p1.z; }
+                else { p.x = op.p2.x; p.y = op.p2.y; p.z = op.p2.z; }
+                return op.cus(p);
+            }
+        }
+    },
+
+};
+GB.models = {
+    faceXZ: function (setting, geo) {
+        var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
+            p1: { x: setting.w * 0.5, y: 0, z: setting.h * 0.5 },
+            p2: { x: -setting.w * 0.5, y: 0, z: setting.h * 0.5 }
+        }))
+            .UV(function (p, i, s) { return { u: 1, v: i / s } }).PushRim(geo, GB.rims.line2P({
+                p1: { x: setting.w * 0.5, y: 0, z: -setting.h * 0.5 },
+                p2: { x: -setting.w * 0.5, y: 0, z: -setting.h * 0.5 }
+            })).Connect(geo,null,null,setting.flip);
+    },
+    faceXY: function (setting, geo) {
+        var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
+            p1: { x: setting.w * 0.5, z: 0, y: setting.h * 0.5 },
+            p2: { x: -setting.w * 0.5, z: 0,y: setting.h * 0.5 }
+        }))
+            .UV(function (p, i, s) { return { u: 1, v: i / s } }).PushRim(geo, GB.rims.line2P({
+                p1: { x: setting.w * 0.5, z: 0, y: -setting.h * 0.5 },
+                p2: { x: -setting.w * 0.5, z: 0, y: -setting.h * 0.5 }
+            })).Connect(geo,null,null,setting.flip);
+    }
+};

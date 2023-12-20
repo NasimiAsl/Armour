@@ -2203,28 +2203,7 @@ GB.CatchPoints = function (res,scl,corr,fun) {
 var NL = `
 `;
 
-function js(op) {
-
-
-
-    if (!def(op)) return null;
-    try {
-
-        var lines =  op.split('\n');
-   
-        var funjs = "";
-        for(var i in lines){          
-            if(lines[i].indexOf('//')!=-1){
-              funjs += lines[i].split('//')[0];
-            }
-            else funjs += lines[i];           
-        }
-
-        var r = window.eval(" r = " + funjs.replaceAll('\n', ' ').replaceAll('\r', ' ')); return r;
-    } catch (e) {
-        state(op + " \n\r\n\r " + e.message, 'msg');
-    }
-}
+ 
 
 
 $$GB.prototype = {

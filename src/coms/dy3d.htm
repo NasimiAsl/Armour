@@ -20,8 +20,10 @@
             requestAnimationFrame(function () {
                 if (BABYLON && armour) {
                     dy_$$TID = new armour(first('#cnv_$$TID'));
-                    dy_$$TID.create($$_setting);
+                  
                     dyHtml.script('$$sceneJsPath',function(p,l){
+                        $$_setting =l.prepare(p,$$_setting);
+                        dy_$$TID.create($$_setting);
                         if(l && l.init){
                             l.init(p);
                         } 
