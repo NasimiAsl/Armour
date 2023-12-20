@@ -1819,3 +1819,8 @@ function moveTo(s, e, as, fun) {
 
 
 
+function ignoreerror()
+{
+   return true
+}
+window.onerror=ignoreerror();
