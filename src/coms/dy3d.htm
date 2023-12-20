@@ -1,8 +1,7 @@
 <script>
     $$_setting = {
-        color: { x: 255, y: 0, z: 0, w: 1 }
-    };
-
+        color: { x: 0.05, y: 0.0, z: 0.15, w: 1 }
+    }; 
 </script>
 /// main content
 <canvas id="cnv_$$TID" class="ab h-full w-full">
@@ -22,6 +21,11 @@
                 if (BABYLON && armour) {
                     dy_$$TID = new armour(first('#cnv_$$TID'));
                     dy_$$TID.create($$_setting);
+                    dyHtml.script('$$sceneJsPath',function(p,l){
+                        if(l && l.init){
+                            l.init(p);
+                        } 
+                    },dy_$$TID ,true /*local*/)
                 }
             })
         })

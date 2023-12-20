@@ -1,4 +1,4 @@
-window.armour = function (canvas,camera) {
+var armour = function (canvas,camera) {
     this.canvas = canvas;
     this.camera = def(camera,this.camera); 
  }
@@ -145,17 +145,18 @@ armour.prototype = {
 
             new BABYLONX.ShaderMaterialHelper().SetUniforms(
                 scene.meshes,
-                scene.camera.position,
-                scene.camera._currentTarget,
+                scene.activeCamera.position,
+                scene.activeCamera._currentTarget,
                 { x: 0, y: 0 },
                 { x: 100, y: 100 },
                 scene.time);
 
         });
 
-        this.engine.runRenderLoop(function () {
+        this.engine.runRenderLoop(function () { 
+
             
-            if(scene.pause)
+            if(!scene.pause)
             scene.render();
         });
 

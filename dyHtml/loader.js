@@ -1,3 +1,34 @@
+/**
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * scripts  
+ * script
+ * 
+ * for run script without add as script tag (also can run script as local)
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ */
+
+
 
 var dy = {};
 var dyHtml = {
@@ -145,30 +176,40 @@ var dyHtml = {
       op.error(e);
       op.end();
     }
+  },
+  getDyElement: function (sel) {
+    if (!first(sel) || first(sel).iden) return null;
+    return tsID[first(sel).iden];
   }
-  , script: function (p, fn,prm) {
-     
+  , script: function (p, fn, prm,localJs) {
+
     dyHtml.down({
       url: p,
       success: function (d) {
+        if(localJs){
+          var local = {};
+          local = js(d);  
+          if (fn) fn(prm,local);
+        } else {
         window.eval(d);
         if (fn) fn(prm);
+        }
       }
     });
   }
-  , scripts: function (ps, fn, n) {
-     
-     
+  , scripts: function (ps, fn, n,isLocal) {
+
+
     if (n == undefined) {
-      dyHtml.scripts(ps , fn, 0);
+      dyHtml.scripts(ps, fn, 0,isLocal);
       return;
     }
 
-    if (n < ps.length ) {
-      dyHtml.script(ps[n], n == ps.length-1 ? fn: function () {  
-        dyHtml.scripts(ps , fn, n + 1); 
-      });
-    } 
+    if (n < ps.length) {
+      dyHtml.script(ps[n], n == ps.length - 1 ? fn : function (op,l) {
+        dyHtml.scripts(ps, fn, n + 1,isLocal);
+      },null,isLocal);
+    }
   }
   , replace: function (tid, data, template) {
 
@@ -318,8 +359,6 @@ window.behindLoop = function () {
 window.behindLoop();
 window.TsID = [];
 
-
-
 window.rootUps = [];
 window.rootMoves = [];
 window.rootClick = [];
@@ -382,8 +421,8 @@ var callInitialized = function (tid, f) {
 window.elementPageLoad = function (th, tid) {
 
 
-
   var par = th.parentNode;
+  par.iden = tid;
   if (!th.attributes['page']) th.setAttribute('page', 'icon');
   if (!th.attributes['path']) th.setAttribute('path', '/');
   if (!th.attributes['params']) th.setAttribute('params', '{}');
