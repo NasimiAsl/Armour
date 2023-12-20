@@ -1,0 +1,28 @@
+<script>
+    $$_setting = {
+        color: { x: 255, y: 0, z: 0, w: 1 }
+    };
+
+</script>
+/// main content
+<canvas id="cnv_$$TID" class="ab h-full w-full">
+
+</canvas>
+/// background script
+<script>
+
+    var dy_$$TID;
+
+    dyHtml.scripts(['/engine/webgl/babylon5.js',
+        '/engine/future3d.js',
+        '/engine/armour.js'],
+        function () {
+
+            requestAnimationFrame(function () {
+                if (BABYLON && armour) {
+                    dy_$$TID = new armour(first('#cnv_$$TID'));
+                    dy_$$TID.create($$_setting);
+                }
+            })
+        })
+</script>

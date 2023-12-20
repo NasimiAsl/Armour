@@ -1,8 +1,8 @@
-var armour = function (canvas,camera) {
+window.armour = function (canvas,camera) {
     this.canvas = canvas;
-    this.camera = def(camera,this.camera);
-
+    this.camera = def(camera,this.camera); 
  }
+
 armour.prototype = {
     scene: null,
     canvas: null,
@@ -38,28 +38,16 @@ armour.prototype = {
 
         return gb;
     },
-    init: function () {
-
-        var scene = createScene();
-        scene.clearColor = new BABYLON.Color4(0.15, 0.0, 0.25, 1.);
-
-        requestAnimationFrame(function () {
-
-        });
-
-    },
-    camera: function () {
+   
+    camera: function (setting) {
         var scene = this.scene;
         // This creates and positions a free camera (non-mesh)
-        camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(-30, 0, 0), scene);
-        camera.lowerRadiusLimit = 1.1;
-
-        // This targets the camera to scene origin 
-        camera.wheelPrecision *= 5.;
-        camera.minZ = 0.001;
-        camera.maxZ = 0.1;
+        this.camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(-30, 0, 0), scene);
+        
+       
     },
-    create: function () {
+    create: function (setting) {
+      
         BABYLONX.ShaderBuilder.InitializeEngine();
         BABYLONX.GeometryBuilder.InitializeEngine();
 
@@ -123,8 +111,10 @@ armour.prototype = {
 
         }
 
-        scene.clearColor = new BABYLON.Color4(0., 0., 0., 1.);
+       
+        scene.clearColor = new BABYLON.Color4(def(setting.color.x,0), def(setting.color.y,0), def(setting.color.z,0), def(setting.color.w,1)); 
 
+        scene.camera = this.camera(setting); 
 
         keyCodeCheck = 0;
         kyCheck = function (ks) {
@@ -144,26 +134,33 @@ armour.prototype = {
             return f;
         }
 
+        scene.time = 0;
+
         scene.registerBeforeRender(function () {
 
-            time++;
+            scene.time++;
 
             if (scene.keyFrame)
-                scene.keyFrame(time);
+                scene.keyFrame(scene.time);
 
             new BABYLONX.ShaderMaterialHelper().SetUniforms(
                 scene.meshes,
-                scene.watcher.position,
-                scene.watcher._currentTarget,
+                scene.camera.position,
+                scene.camera._currentTarget,
                 { x: 0, y: 0 },
                 { x: 100, y: 100 },
-                time);
+                scene.time);
 
         });
 
         this.engine.runRenderLoop(function () {
+            
+            if(scene.pause)
             scene.render();
         });
+
+        
+
         return scene;
     }
-};
+}; 

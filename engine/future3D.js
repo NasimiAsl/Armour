@@ -1149,8 +1149,7 @@ function ConnectStep(n, l, fun, a) {
 
 
 
-///
-var _null = 'set null anyway';
+/// 
 
 function def(a, d) {
     if (a != undefined && a != null) return (d != undefined && d != null ? a : true);
