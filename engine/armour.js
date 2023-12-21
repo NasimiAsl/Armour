@@ -139,7 +139,7 @@ armour.prototype = {
 
             scene.time++;
 
-            if(th.keyFrame)th.keyFrame(scene.time); 
+          
 
 
             new BABYLONX.ShaderMaterialHelper().SetUniforms(
@@ -153,6 +153,8 @@ armour.prototype = {
         });
 
         this.engine.runRenderLoop(function () {
+
+            if(th.keyFrame)th.keyFrame(scene.time); 
 
             if (!scene.pause)
                 scene.render();
@@ -190,6 +192,17 @@ GB.rims = {
 
 };
 GB.models = {
+    sample:   function (setting, geo) {
+        var rim = new GB.Rims() ;
+        rim
+        .PushSquare(geo,{sf:'xz',w:0,l:0,y: 0.5})
+        .PushSquare(geo,{sf:'xz',w:1,l:1,y: 0.5}).Connect(geo)
+        .PushSquare(geo,{sf:'xz',w:1,l:1,y: 0.5})
+        .PushSquare(geo,{sf:'xz',w:1,l:1,y:-0.5}).Connect(geo)
+        .PushSquare(geo,{sf:'xz',w:1,l:1,y:-0.5})
+        .PushSquare(geo,{sf:'xz',w:0,l:0,y:-0.5}).Connect(geo) ;
+        
+    },
     faceXZ: function (setting, geo) {
         var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
             p1: { x: setting.w * 0.5, y: 0, z: setting.h * 0.5 },
