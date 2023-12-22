@@ -20,14 +20,26 @@
             requestAnimationFrame(function () {
                 if (BABYLON && armour) {
                     dy_$$TID = new armour(first('#cnv_$$TID'));
-                  
-                    dyHtml.script('$$sceneJsPath',function(p,l){
-                        $$_setting =l.prepare(p,$$_setting);
-                        dy_$$TID.create($$_setting);
-                        if(l && l.init){
-                            l.init(p);
-                        } 
-                    },dy_$$TID ,true /*local*/)
+
+                    var local = {};
+
+                    for (var i in $$sceneJsPath)
+                        dyHtml.script($$sceneJsPath[i], function (p, l) {
+
+                            for (var j in l) local[j] = l[j];
+
+                            if (i == $$sceneJsPath.length - 1) {
+                                console.log(local);
+                               
+                                if (local && local.prepare) $$_setting = local.prepare(p, $$_setting);
+                                 
+                                  dy_$$TID.create($$_setting);
+                                 
+                                if (local && local.init) local.init(p);
+                                 
+                            }
+
+                        }, dy_$$TID, true)
                 }
             })
         })

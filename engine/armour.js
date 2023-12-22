@@ -28,8 +28,9 @@ armour.prototype = {
 
             
         `);
-
-                return mat(me);
+                if (mat)
+                    return mat(me);
+                return me;
             }).BuildMaterial(this.scene);
 
         if (init) init(gb, gb.material);
@@ -66,6 +67,9 @@ armour.prototype = {
             //scene.alpha_view = scene.activeCamera.alpha;
 
             scene.KeyShift = event.shiftKey;
+            scene.KeyAlt = event.altKey;
+            scene.KeyCtrl = event.ctrlKey;
+
 
             if (event.keyCode == 87) scene.KeyW = 1;
             if (event.keyCode == 83) scene.KeyS = 1;
@@ -88,7 +92,10 @@ armour.prototype = {
             var k = ',' + event.keyCode + ',';
             scene.keys = scene.keys.replaceAll(k, '');
 
-            scene.KeyShift = event.shiftKey;
+            scene.KeyShift = false;
+            scene.KeyAlt = false;
+            scene.KeyCtrl = false;
+
 
             scene.key = event.key;
 
@@ -133,13 +140,11 @@ armour.prototype = {
         }
 
         scene.time = 0;
-        
+
 
         scene.registerBeforeRender(function () {
 
             scene.time++;
-
-          
 
 
             new BABYLONX.ShaderMaterialHelper().SetUniforms(
@@ -154,7 +159,7 @@ armour.prototype = {
 
         this.engine.runRenderLoop(function () {
 
-            if(th.keyFrame)th.keyFrame(scene.time); 
+            if (th.keyFrame) th.keyFrame(scene.time);
 
             if (!scene.pause)
                 scene.render();
@@ -192,16 +197,16 @@ GB.rims = {
 
 };
 GB.models = {
-    sample:   function (setting, geo) {
-        var rim = new GB.Rims() ;
+    sample: function (setting, geo) {
+        var rim = new GB.Rims();
         rim
-        .PushSquare(geo,{sf:'xz',w:0,l:0,y: 0.5})
-        .PushSquare(geo,{sf:'xz',w:1,l:1,y: 0.5}).Connect(geo)
-        .PushSquare(geo,{sf:'xz',w:1,l:1,y: 0.5})
-        .PushSquare(geo,{sf:'xz',w:1,l:1,y:-0.5}).Connect(geo)
-        .PushSquare(geo,{sf:'xz',w:1,l:1,y:-0.5})
-        .PushSquare(geo,{sf:'xz',w:0,l:0,y:-0.5}).Connect(geo) ;
-        
+            .PushSquare(geo, { sf: 'xz', w: 0, l: 0, y: 0.5 })
+            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: 0.5 }).Connect(geo)
+            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: 0.5 })
+            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: -0.5 }).Connect(geo)
+            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: -0.5 })
+            .PushSquare(geo, { sf: 'xz', w: 0, l: 0, y: -0.5 }).Connect(geo);
+
     },
     faceXZ: function (setting, geo) {
         var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
@@ -211,16 +216,16 @@ GB.models = {
             .UV(function (p, i, s) { return { u: 1, v: i / s } }).PushRim(geo, GB.rims.line2P({
                 p1: { x: setting.w * 0.5, y: 0, z: -setting.h * 0.5 },
                 p2: { x: -setting.w * 0.5, y: 0, z: -setting.h * 0.5 }
-            })).Connect(geo,null,null,setting.flip);
+            })).Connect(geo, null, null, setting.flip);
     },
     faceXY: function (setting, geo) {
         var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
             p1: { x: setting.w * 0.5, z: 0, y: setting.h * 0.5 },
-            p2: { x: -setting.w * 0.5, z: 0,y: setting.h * 0.5 }
+            p2: { x: -setting.w * 0.5, z: 0, y: setting.h * 0.5 }
         }))
             .UV(function (p, i, s) { return { u: 1, v: i / s } }).PushRim(geo, GB.rims.line2P({
                 p1: { x: setting.w * 0.5, z: 0, y: -setting.h * 0.5 },
                 p2: { x: -setting.w * 0.5, z: 0, y: -setting.h * 0.5 }
-            })).Connect(geo,null,null,setting.flip);
+            })).Connect(geo, null, null, setting.flip);
     }
 };

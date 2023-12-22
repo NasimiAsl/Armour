@@ -273,6 +273,9 @@ var dyHtml = {
 
 
 var temp_baseIdentity = 0;
+var temp_objectIden = 0;
+var temp_object = [];
+
 function initInnerContent(d, fn, fs, pms, fe) {
 
   fn = def(fn, function (d) {
@@ -315,7 +318,15 @@ function initInnerContent(d, fn, fs, pms, fe) {
     .replaceAll("$$images", "/images");
 
   if (pms) {
-    for (var pm in pms) {
+    for (var pm in pms) { 
+
+      if(typeof(pms[pm])=='object')
+       {
+        temp_objectIden ++;
+        temp_object[temp_objectIden] = pms[pm];
+        d = d.replaceAll('$$' + pm,'temp_object['+temp_objectIden+']');
+
+       } else  
       d = d.replaceAll('$$' + pm, pms[pm]);
     }
   }
@@ -394,8 +405,9 @@ window.winUp = function (evt) {
 
 window.init_page = function (d, json) {
 
+   
   for (var it in json) {
-
+   
     d = d.replaceAll('$$' + it, json[it]);
   }
   return d;
