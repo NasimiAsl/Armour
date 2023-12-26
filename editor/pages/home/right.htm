@@ -1,32 +1,60 @@
+<script>
+    $$_form = {
+        PID:$$TID,
+        css:'w-full f f-c f-at f-ct f-js',
+        items: {
+            seg: {
+                title: 'segment',
+                type: 'range',
+                min: 10,
+                max: 100,
+                step:10,
+                value: 30
+            },
+            submit: {
+                item:2,
+                title: 'segment',
+                type: 'range',
+                min: 10,
+                max: 100,
+                step:10,
+                value: 'apply'
+            }
+        }
+    };
+</script>
+/// main content
+<div class="mt-005  fs-07 prm-t-h sec-t  icon   z03    f f-r f-at f-ct f-js bb">
+    <div class="fs-06  graym-t-h sec-t  icon   f-center">
+        add
+    </div>
+</div>
 
-    <div class="mt-005  fs-07 prm-t-h sec-t  icon   z03    f f-r f-at f-ct f-js bb">
-        <div class="fs-06  prm-t-h sec-t  icon   f-center">
-            add
+<div class="graytr  sec-t  rad-05 m-00   mt-005 p-00 h-full w-full rad-05 f f-c f-at f-ct f-js">
+
+    <div class="rt h-p30 ns  graytr rad-t-05  ">
+        <div class="ab h-p50 r-n0025 sub-f   t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            properties
+        </div>
+        <div class="">
+            <loader page="json" path="/src/coms/" params="$$_form"></loader>
         </div>
     </div>
-     
-    <div class="graytr  sec-t  rad-05 m-00   mt-005 p-00 h-full w-full rad-05 f f-c f-at f-ct f-js">
-
-        <div class="rt h-p30 ns  graytr rad-t-05  ">
-            <div class="ab h-p50 r-n0025 sub-f   t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                properties
-            </div>
+    <div class="rt h-p30 ns ">
+        <div class="ab h-p50 r-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            templates
         </div>
-        <div class="rt h-p30 ns ">
-            <div class="ab h-p50 r-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                templates
-            </div>
-        </div>
-        <div class="rt h-p70 ns  graytr">
-            <div class="ab h-p50 r-n0025  sub-f t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                controls
-            </div>
-        </div> 
-
     </div>
- 
-    <div class="mt-005  fs-05 sec-t  mb-005   z03    f-center  ">
-        <img src="/images/logo.svg" class="w-0125 h-0125 mr-0025   rad-50" />
-         <span class="prm-t fs-08 bb">ARMOUR</span> 
-          
-    </div> 
+    <div class="rt h-p70 ns  graytr">
+        <div class="ab h-p50 r-n0025  sub-f t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            controls
+        </div>
+    </div>
+
+</div>
+
+<div class="mt-005  fs-05 sec-t  mb-005   z03    f-center  ">
+    <img src="/images/logo.svg" class="w-0125 h-0125 mr-0025   rad-50" />
+    <span class="prm-t fs-08 bb">ARMOUR</span>
+
+</div>

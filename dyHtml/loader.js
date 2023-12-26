@@ -233,10 +233,7 @@ var dyHtml = {
     th.nextElementSibling = {
       value: template ? template : TsID[tid].template,
       attributes: {
-        "params": { value: data },
-
-        "path": null,
-        "page": null,
+        "params": { value: data }, 
       },
 
       setAttribute: function (n, v) {
@@ -246,11 +243,24 @@ var dyHtml = {
     };
 
 
-
+    
     if (typeof (data) == "object") {
+ 
 
       if (data.length) {
         elementPageRepeat(th, tid, true);
+      } else {
+       
+        th.attributes = {
+            "params": { value: data }, 
+            "path": { value: data.path },
+            "page": { value: data.page },
+          }; 
+          th.setAttribute =  function (n, v) {
+            th.attributes[n] = { value: v };
+          } ; 
+       
+        elementPageLoad(th, tid, true);
       }
 
     } else if (typeof (data) == "number") {
@@ -430,7 +440,7 @@ var callInitialized = function (tid, f) {
   else f();
 };
 
-window.elementPageLoad = function (th, tid) {
+window.elementPageLoad = function (th, tid, noNeedParse) {
 
 
   var par = th.parentNode;
@@ -442,14 +452,19 @@ window.elementPageLoad = function (th, tid) {
 
   if (th.attributes['online']) th.online = js('function(p){var element = p;var me = p.event;' + th.attributes['online'].value + '}');
 
-  loadPage(th.attributes['page'].value, par, null, th.attributes['path'].value, js(th.attributes['params'].value.replaceAll('$$_', 'TsID[' + tid + '].')), th.online);
+  var param;
+  if (!noNeedParse)
+    param = js(th.attributes['params'].value.replaceAll('$$_', 'TsID[' + tid + '].'));
+  else
+    param = th.attributes['params'].value;
+
+  loadPage(th.attributes['page'].value, par, null, th.attributes['path'].value,param, th.online);
 
 };
 
 window.elementPageRepeat = function (th, tid, noNeedParse) {
 
   var txt = th.nextElementSibling;
-
 
   callInitialized(tid, function () {
 
@@ -475,7 +490,6 @@ window.elementPageRepeat = function (th, tid, noNeedParse) {
 
     TsID[tid].template = txt.value;
     TsID[tid].ctrl = par;
-
 
     var content = '';
 

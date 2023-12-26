@@ -31,6 +31,7 @@ local = {
         obj.rotation.x = obj.oldRotation.x - dx * 0.01;
         obj.rotation.y = obj.oldRotation.y - dy * 0.01;
 
+         
 
     },
     cameraRotation: function (eng, dx, dy, start) {
@@ -51,7 +52,7 @@ local = {
 
 
     },
-    objMovement: function (eng, obj, dx, dy, start, dep,flat) {
+    objMovement: function (eng, obj, dx, dy, start, dep, flat) {
 
         var th = this;
         if (start) {
@@ -61,6 +62,7 @@ local = {
                 z: obj.position.z
             };
         }
+        
 
         if (!dep) {
 
@@ -88,16 +90,11 @@ local = {
 
             obj.position.x = obj.oldMovment.x - 0.01 * (dy * dd.x);
             obj.position.y = obj.oldMovment.y - 0.01 * (dy * dd.y);
-            obj.position.z = obj.oldMovment.z - 0.01 * (dy * dd.z); 
+            obj.position.z = obj.oldMovment.z - 0.01 * (dy * dd.z);
 
         }
 
-
-
-
-
-
-
+      
 
 
     },
@@ -134,89 +131,8 @@ local = {
 
 
     },
-    applyEvent: function (eng, scene) {
-
-        var th = this;
 
 
-        var clickDown = {};
-
-        scene.onPointerDown = function (d, p) {
-
-            clickDown.x = event.offsetX;
-            clickDown.y = event.offsetY;
-            clickDown.d = 1;
-            clickDown.t = new Date().getTime();
-            clickDown.b = event.button;
-
-            if (!eng.scene.KeyCtrl && !eng.scene.KeyShift && !eng.scene.KeyAlt &&
-                clickDown.d && clickDown.b == 0) {
-
-                clickDown.camRotation = 1;
-                th.cameraRotation(eng, clickDown.dx, clickDown.dy, true);
-            }
-
-            if (!eng.scene.KeyCtrl && !eng.scene.KeyShift && !eng.scene.KeyAlt &&
-                clickDown.d && clickDown.b == 2) {
-
-                clickDown.camMovement = 1;
-                th.cameraMovement(eng, clickDown.dx, clickDown.dy, true);
-            }
-
-            if (p.hit) {
-
-                if (eng.scene.KeyCtrl   && !eng.scene.KeyAlt &&
-                    clickDown.d     ) {
-
-                    clickDown.objMovement = p.pickedMesh;
-                    th.objMovement(eng, clickDown.objMovement, clickDown.dx, clickDown.dy, true);
-                }
-            }
-
-
-        };
-
-        scene.onPointerMove = function (d, p) {
-
-            clickDown.dx = event.offsetX - clickDown.x;
-            clickDown.dy = event.offsetY - clickDown.y;
-            clickDown.mx = event.offsetX;
-            clickDown.my = event.offsetY;
-            clickDown.dt = new Date().getTime() - clickDown.t;
-
-            clickDown.m = 1;
-
-            if (clickDown.camRotation)
-                th.cameraRotation(eng, clickDown.dx, clickDown.dy);
-
-            if (clickDown.camMovement)
-                th.cameraMovement(eng, clickDown.dx, clickDown.dy);
-
-            if (clickDown.objMovement)
-                th.objMovement(eng, clickDown.objMovement, clickDown.dx, clickDown.dy,null, eng.scene.KeyShift);
-
-        };
-
-        scene.onPointerUp = function (d, p) {
-
-            clickDown.b = null;
-
-            clickDown.d = 0;
-            clickDown.m = 0;
-            clickDown.camRotation = 0;
-            clickDown.camMovement = 0;
-            clickDown.objMovement = null;
-
-        };
-
-        document.body.addEventListener('keyup', scene.keyU);
-        document.body.addEventListener('keydown', scene.keyD);
-        document.body.addEventListener('wheel', function () {
-
-        });
-
-    },
-    
     init: function (eng) {
 
 

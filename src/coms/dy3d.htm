@@ -23,23 +23,29 @@
 
                     var local = {};
 
-                    for (var i in $$sceneJsPath)
-                        dyHtml.script($$sceneJsPath[i], function (p, l) {
+                    var loaderItem = 0;
 
-                            for (var j in l) local[j] = l[j];
+                    for (var i in $$sceneJsPath) 
+                    
+                        dyHtml.script($$sceneJsPath[i], function (p, l) {  
+                            loaderItem++;
 
-                            if (i == $$sceneJsPath.length - 1) {
-                                console.log(local);
-                               
-                                if (local && local.prepare) $$_setting = local.prepare(p, $$_setting);
-                                 
-                                  dy_$$TID.create($$_setting);
-                                 
-                                if (local && local.init) local.init(p);
-                                 
+                            for (var j in l) local[j] = l[j];  
+
+                            if (loaderItem == $$sceneJsPath.length ) {
+
+                                
+                                    if (local && local.prepare) $$_setting = local.prepare(p.m, $$_setting);
+
+                                    dy_$$TID.create($$_setting);
+
+                                    if (local && local.init) local.init(p.m);
+
+                                
+
                             }
 
-                        }, dy_$$TID, true)
+                        }, {i:i,m:dy_$$TID}, true)
                 }
             })
         })

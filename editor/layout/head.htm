@@ -3,7 +3,7 @@
       white:'#ffffff',
       black:'#000000',
       grayl:'#EBEBEA',
-      graym:'#610a65',
+      graym:'#617565',
       grayd:'#222222',
       graytr:'#22303380', 
       darktr:'rgba(25,25,25,0.8)', 
@@ -19,5 +19,18 @@
     
     /// background script
     <script>
+
+      dyHtml.down({
+        url:'',
+        type:'GET',
+        begin:function(client){
+
+          client.setRequestHeader('Access-Control-Allow-Origin', '*');
+
+        },
+        success:function(d){
+
+        }    
+      });
        
     </script>
