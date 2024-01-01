@@ -24,7 +24,7 @@ local = {
 
             if (time % 100 < 1) {
                 var width = eng.canvas.offsetWidth;
-                var height = eng.canvas.offsetHight;
+                var height = eng.canvas.offsetHeight;
                 if (eng.width != width || eng.hieght != height) {
                     eng.width = width;
                     eng.hieght = height;
@@ -39,18 +39,19 @@ local = {
     },
     applyEvent: function (eng, scene) {
 
-        var th = this;
-
+        var th = this; 
 
         var clickDown = {};
 
         scene.onPointerDown = function (d, p) {
 
             clickDown.x = event.offsetX;
+            eng.w = eng.canvas.offsetWidth;
+            eng.h = eng.canvas.offsetHeight;
             clickDown.y = event.offsetY;
             clickDown.d = 1;
             clickDown.t = new Date().getTime();
-            clickDown.b = event.button;
+            clickDown.b = event.button; 
 
             if (!eng.scene.KeyCtrl && !eng.scene.KeyShift && !eng.scene.KeyAlt &&
                 clickDown.d && clickDown.b == 0) {
@@ -58,8 +59,14 @@ local = {
                 clickDown.camRotation = 1;
                 th.cameraRotation(eng, clickDown.dx, clickDown.dy, true);
             }
+            else if (!eng.scene.KeyCtrl &&  eng.scene.KeyShift && !eng.scene.KeyAlt &&
+                clickDown.d && clickDown.b == 0) {
 
-            if (!eng.scene.KeyCtrl && !eng.scene.KeyShift && !eng.scene.KeyAlt &&
+                clickDown.camRadiusChange = 1;
+                th.cameraRadiusChange(eng, clickDown.dx, clickDown.dy, true);
+            }
+
+            if (!eng.scene.KeyCtrl   &&
                 clickDown.d && clickDown.b == 2) {
 
                 clickDown.camMovement = 1;
@@ -68,7 +75,7 @@ local = {
 
             if (p.hit) {
 
-                if (eng.scene.KeyCtrl   && !eng.scene.KeyAlt &&
+                if (eng.scene.KeyCtrl    &&
                     clickDown.d && clickDown.b == 2   ) {
 
                     clickDown.objMovement = p.pickedMesh;  
@@ -93,6 +100,9 @@ local = {
 
             if (clickDown.camRotation)
                 th.cameraRotation(eng, clickDown.dx, clickDown.dy);
+           
+            if (clickDown.camRadiusChange)
+                th.cameraRadiusChange(eng, clickDown.dx, clickDown.dy);
 
             if (clickDown.camMovement)
                 th.cameraMovement(eng, clickDown.dx, clickDown.dy);
@@ -118,6 +128,7 @@ local = {
 
             clickDown.camRotation = 0;
             clickDown.camMovement = 0;
+            clickDown.camRadiusChange = 0;
             
 
         };
@@ -216,7 +227,6 @@ local = {
                 break;
             }
         } 
-    }
-
+    } 
 }
  

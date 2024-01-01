@@ -45,11 +45,33 @@ local = {
             };
         }
 
+        if(start) return;
+
         eng.camera.alpha = th.oldRotation.a - dx * 0.01;
         eng.camera.beta = min(PI, max(0, th.oldRotation.b - dy * 0.01));
 
         th.updateFaceHelperByCamera(eng.camera, eng.locker);
 
+
+    }, 
+    cameraRadiusChange: function (eng, dx, dy, start) {
+
+        var th = this;
+        if (start) {
+            th.oldRotation = {
+                a: eng.camera.alpha,
+                b: eng.camera.beta,
+                r: eng.camera.radius,
+                f: eng.camera.fov
+            };
+        }
+
+        if(start) return; 
+
+        eng.camera.radius = th.oldRotation.r - dy * (0.03   );
+        eng.camera.fov = min(1.6,max(0.3 , th.oldRotation.f -  dx * (0.01   )*0.1 ));
+      
+        th.updateFaceHelperByCamera(eng.camera, eng.locker); 
 
     },
     objMovement: function (eng, obj, dx, dy, start, dep, flat) {
@@ -108,6 +130,8 @@ local = {
                 z: eng.camera._currentTarget.z
             };
         }
+
+        if(start) return;
 
         var dt = {
             x: eng.locker.top.absolutePosition.x - eng.locker.absolutePosition.x,

@@ -29,6 +29,7 @@ function join(ar1) {
   return _each(ar1, function (at, i) { _each(at, function (ati, j) { ar3.push(ati); }); }, function () { return ar3; });
 }
 
+var JsIden = 0;
 /** run simple json or Javascript value */
 function js(op, adr) {
 
@@ -40,14 +41,14 @@ function js(op, adr) {
     var funjs = "";
     for (var i in lines) {
       if (lines[i].indexOf('//') != -1) {
-        funjs += lines[i].split('//')[0];
+        funjs += lines[i].split('//')[0].trim();
       }
       else funjs += lines[i];
     }
 
-    var r = window.eval(" r = " + funjs.replaceAll('\n', ' ').replaceAll('\r', ' ')); return r;
+    var r = window.eval(" r = " + funjs.replaceAll('\n', ' ').replaceAll('\r', ' ') ); return r;
   } catch (e) {
-    console.log('Error:', e.message, op, adr);
+    console.log('Error JS:', e.message, 'code :'+ op, adr);
 
 
   }

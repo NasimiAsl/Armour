@@ -177,38 +177,42 @@ var dyHtml = {
       op.end();
     }
   },
+  get: function (ctl, key) {
+    if (!key) return TsID[ctl.iden];
+    if (key) return TsID[ctl.iden][key];
+  },
   getDyElement: function (sel) {
     if (!first(sel) || first(sel).iden) return null;
     return tsID[first(sel).iden];
   }
-  , script: function (p, fn, prm,localJs) {
+  , script: function (p, fn, prm, localJs) {
 
     dyHtml.down({
       url: p,
       success: function (d) {
-        if(localJs){
+        if (localJs) {
           var local = {};
-          local = js(d);  
-          if (fn) fn(prm,local);
+          local = js(d);
+          if (fn) fn(prm, local);
         } else {
-        window.eval(d);
-        if (fn) fn(prm);
+          window.eval(d);
+          if (fn) fn(prm);
         }
       }
     });
   }
-  , scripts: function (ps, fn, n,isLocal) {
+  , scripts: function (ps, fn, n, isLocal) {
 
 
     if (n == undefined) {
-      dyHtml.scripts(ps, fn, 0,isLocal);
+      dyHtml.scripts(ps, fn, 0, isLocal);
       return;
     }
 
     if (n < ps.length) {
-      dyHtml.script(ps[n], n == ps.length - 1 ? fn : function (op,l) {
-        dyHtml.scripts(ps, fn, n + 1,isLocal);
-      },null,isLocal);
+      dyHtml.script(ps[n], n == ps.length - 1 ? fn : function (op, l) {
+        dyHtml.scripts(ps, fn, n + 1, isLocal);
+      }, null, isLocal);
     }
   }
   , replace: function (tid, data, template) {
@@ -233,7 +237,7 @@ var dyHtml = {
     th.nextElementSibling = {
       value: template ? template : TsID[tid].template,
       attributes: {
-        "params": { value: data }, 
+        "params": { value: data },
       },
 
       setAttribute: function (n, v) {
@@ -243,23 +247,23 @@ var dyHtml = {
     };
 
 
-    
+
     if (typeof (data) == "object") {
- 
+
 
       if (data.length) {
         elementPageRepeat(th, tid, true);
       } else {
-       
+
         th.attributes = {
-            "params": { value: data }, 
-            "path": { value: data.path },
-            "page": { value: data.page },
-          }; 
-          th.setAttribute =  function (n, v) {
-            th.attributes[n] = { value: v };
-          } ; 
-       
+          "params": { value: data },
+          "path": { value: data.path },
+          "page": { value: data.page },
+        };
+        th.setAttribute = function (n, v) {
+          th.attributes[n] = { value: v };
+        };
+
         elementPageLoad(th, tid, true);
       }
 
@@ -328,16 +332,15 @@ function initInnerContent(d, fn, fs, pms, fe) {
     .replaceAll("$$images", "/images");
 
   if (pms) {
-    for (var pm in pms) { 
+    for (var pm in pms) {
 
-      if(typeof(pms[pm])=='object')
-       {
-        temp_objectIden ++;
+      if (typeof (pms[pm]) == 'object') {
+        temp_objectIden++;
         temp_object[temp_objectIden] = pms[pm];
-        d = d.replaceAll('$$' + pm,'temp_object['+temp_objectIden+']');
+        d = d.replaceAll('$$' + pm, 'temp_object[' + temp_objectIden + ']');
 
-       } else  
-      d = d.replaceAll('$$' + pm, pms[pm]);
+      } else
+        d = d.replaceAll('$$' + pm, pms[pm]);
     }
   }
 
@@ -348,7 +351,7 @@ function initInnerContent(d, fn, fs, pms, fe) {
 
     d = sd0[1];
     TsID[pms.TID] = def(TsID[pms.TID], {});
-    TsID[pms.TID].initSscript = fs(sd0[0]).replace("<script>", "").replace("</script>", "");
+    TsID[pms.TID].initSscript = fs(sd0[0]).replace("<script>", "").replace("</script>", "JsIden++;");
 
     callInitialized(pms.TID, function (d) {
 
@@ -362,7 +365,7 @@ function initInnerContent(d, fn, fs, pms, fe) {
   }
   fn(d);
   if (sd.length != 0) {
-    window.eval(fs(sd[1]).replace("<script>", "").replace("</script>", "").replaceAll('$$_', 'TsID[' + pms.TID + '].'));
+    window.eval(fs(sd[1]).replace("<script>", "").replace("</script>", "JsIden++;").replaceAll('$$_', 'TsID[' + pms.TID + '].'));
     fe(TsID[pms.TID]);
   }
 }
@@ -379,6 +382,7 @@ window.behindLoop = function () {
 };
 window.behindLoop();
 window.TsID = [];
+window.TsName = [];
 
 window.rootUps = [];
 window.rootMoves = [];
@@ -415,9 +419,8 @@ window.winUp = function (evt) {
 
 window.init_page = function (d, json) {
 
-   
+
   for (var it in json) {
-   
     d = d.replaceAll('$$' + it, json[it]);
   }
   return d;
@@ -444,13 +447,19 @@ window.elementPageLoad = function (th, tid, noNeedParse) {
 
 
   var par = th.parentNode;
-  par.iden = tid;
+  par.iden = tid; 
+  if (TsID[tid] && TsID[tid].name)
+    par.name = TsID[tid].name;
+
   if (!th.attributes['page']) th.setAttribute('page', 'icon');
   if (!th.attributes['path']) th.setAttribute('path', '/');
   if (!th.attributes['params']) th.setAttribute('params', '{}');
 
 
   if (th.attributes['online']) th.online = js('function(p){var element = p;var me = p.event;' + th.attributes['online'].value + '}');
+  if (th.attributes['onready']) th.onready = js('function(element,model){ ' + th.attributes['onready'].value + '}');
+
+   par.onready = th.onready;
 
   var param;
   if (!noNeedParse)
@@ -458,7 +467,7 @@ window.elementPageLoad = function (th, tid, noNeedParse) {
   else
     param = th.attributes['params'].value;
 
-  loadPage(th.attributes['page'].value, par, null, th.attributes['path'].value,param, th.online);
+  loadPage(th.attributes['page'].value, par, null, th.attributes['path'].value, param, th.online);
 
 };
 
@@ -470,6 +479,11 @@ window.elementPageRepeat = function (th, tid, noNeedParse) {
 
     var par = th.parentNode;
     par.iden = tid;
+
+  console.log(TsID[tid],tid)
+  if (TsID[tid] && TsID[tid].name)
+    par.name = TsID[tid].name;
+
     if (!txt.attributes['params']) txt.setAttribute('params', '{}');
 
     if (txt.attributes['online']) txt.online = js('function(p){var element = p;var me = p.event;' + txt.attributes['online'].value + '}');
@@ -527,7 +541,11 @@ window.elementPageSwitch = function (th, tid, noNeedParse) {
 
   var par = th.parentNode;
   par.iden = tid;
-  par.title = tid;
+
+  console.log(TsID[tid],tid)
+  if (TsID[tid] && TsID[tid].name)
+    par.name = TsID[tid].name;
+ 
 
   if (!txt.attributes['params']) th.setAttribute('params', '{}');
 
@@ -640,6 +658,7 @@ window.loadPage = function (page, ctl, fun, root, pms, fs) {
 
       }, null, pms, function () {
         pms.event = TsID[pms.TID];
+        pms.ready = ctl.onready;
         if (fs) fs(pms);
       });
     }

@@ -1,3 +1,7 @@
+<script> 
+
+</script>
+/// main content
 <div class=" sec-t  rad-05 m-00 mb-005 p-00 h-full w-full rad-05 f f-c f-at f-ct f-js">
     <div class="fs-07 p-0005 mt-01 prm-t-h sec-t  icon   f-center">
         add
@@ -9,15 +13,22 @@
         delete
     </div>
 
-    <div id="current_surface" onclick="dyHtml.replace(this,2)" title="Active Surface Direction" class=" p-0005 mt-01 prm-t-h sec-t fs-05     f-center">
-        <switcher  oncreate="item=1;" params="{}">
+    <div id="current_surface" onclick=" this._view = def(this._view,0); 
+    dyHtml.replace(this, (++this._view )%4);" title="Active Surface Direction" class=" p-0005 mt-01 prm-t-h sec-t fs-05     f-center">
+        <switcher  oncreate="  item=0;" params="{}">
             XZ
             $$next-case
             XY
             $$next-case
-            ZY
+            ZY 
+            $$next-case
+            PP
         </switcher>
-    </div>
-
-
+    </div> 
 </div>
+/// background script
+<script>  
+    function applyView(){
+        
+    }
+</script>

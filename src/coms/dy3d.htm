@@ -41,7 +41,8 @@
 
                                     if (local && local.init) local.init(p.m);
 
-                                
+                                    if(TsID[$$TID].ctrl.onready)
+                                        TsID[$$TID].ctrl.onready(TsID[$$TID],dy_$$TID );
 
                             }
 
