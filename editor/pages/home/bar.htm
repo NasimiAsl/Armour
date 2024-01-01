@@ -1,4 +1,4 @@
-<script> 
+<script>
 
 </script>
 /// main content
@@ -14,21 +14,30 @@
     </div>
 
     <div id="current_surface" onclick=" this._view = def(this._view,0); 
-    dyHtml.replace(this, (++this._view )%4);" title="Active Surface Direction" class=" p-0005 mt-01 prm-t-h sec-t fs-05     f-center">
-        <switcher  oncreate="  item=0;" params="{}">
+    dyHtml.replace(this, (++this._view )%4);applyView(this._view);" title="Active Surface Direction"
+        class=" p-0005 mt-01 prm-t-h sec-t fs-05     f-center">
+        <switcher oncreate="  item=0;" params="{}">
             XZ
             $$next-case
             XY
             $$next-case
-            ZY 
+            ZY
             $$next-case
             PP
         </switcher>
-    </div> 
+    </div>
 </div>
 /// background script
-<script>  
-    function applyView(){
-        
+<script>
+    function applyView(item) {
+
+
+        switch (item) {
+            case 0: {
+
+                break;
+            }
+        }
+
     }
 </script>
