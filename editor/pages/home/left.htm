@@ -1,54 +1,85 @@
 <script>
+
+    $$_data = {
+        itemDefaultCss :'c-htrwhite2 mb-0005 rad-05 prm-t-h sec-t' 
+    };
+
     $$_help = [
-    {key:'[Drag]',value:'View Projection Rotation '},
-    {key:'Shift + [Drag Y axis]',value:'Zoom in Out '},
-    {key:'Shift + [Drag X axis]',value:'perspective FOV control '},
-    {key:'[Right Drag]',value:'View Projection Movement ',css:'mb-005 c-tblue'},
-    
-    {key:'Ctrl + Z',value:'undo '},
-    {key:'Ctrl + Shift + Z',value:'redo ',css:'mb-005'},
+        { key: '[Drag]', value: 'View Projection Rotation ' },
+        { key: 'Shift + [Drag Y axis]', value: 'Zoom in Out ' },
+        { key: 'Shift + [Drag X axis]', value: 'perspective FOV control ' },
+        { key: '[Right Drag]', value: 'View Projection Movement ', css: 'mb-005 c-tblue' },
 
-    {key:'Ctrl + [Right Drag]',value:'move Content '},
-    {key:'Ctrl + Shift + [Right Drag]',value:'move Content ', css:'mb-005'},
+        { key: 'Ctrl + Z', value: 'undo ' },
+        { key: 'Ctrl + Shift + Z', value: 'redo ', css: 'mb-005' },
 
-    {key:'Ctrl + [Drag]',value:' '},
-    {key:'Ctrl + Shift+ [Drag]',value:' ',css:'mb-005'},
-    
-    {key:'Ctrl + Shift+ Space',value:'change Current Surface',css:'mb-005 c-tblue'},
+        { key: 'Ctrl + [Right Drag]', value: 'move Content ' },
+        { key: 'Ctrl + Shift + [Right Drag]', value: 'move Content ', css: 'mb-005' },
+
+        { key: 'Ctrl + [Drag]', value: ' ' },
+        { key: 'Ctrl + Shift+ [Drag]', value: ' ', css: 'mb-005' },
+
+        { key: 'Ctrl + Shift+ Space', value: 'change Current Surface', css: 'mb-005 c-tblue' },
 
     ];
 </script>
 /// main content
-    <div class="graytr rt  sec-t  rad-05 m-00 mb-005 mt-005 p-00 h-full w-full rad-05 f f-c f-at f-ct f-js">
+<div class="graytr rt  sec-t  rad-05 m-00 mb-005 mt-005 p-00 h-full w-full rad-05 f f-c f-at f-ct f-js">
 
-        <div class="ab w-01 h-01 ns r-n01 ">
-            <div class="icon  fs-05 c-torg prm-t-h">info</div>
-            <div class="ab l-005 t-005   graytr p-0025 rad-05 sub-f f f-r f-w f-at f-ct f-js">
-                <repeater params="$$_help">
-                    <div class='f f-r f-nw f-at f-ct f-js bb-i-01 c-b-itrwhite2 $$css'><div class="w-05">$$key</div><div class="w-05">$$value</div> </div>
-                </repeater>
-            </div>
+    <div class="ab w-01 h-01 ns r-n01 ">
+        <div class="icon  fs-05 c-torg prm-t-h">info</div>
+        <div class="ab l-005 t-005   graytr p-0025 rad-05 sub-f f f-r f-w f-at f-ct f-js">
+            <repeater params="$$_help">
+                <div class='f f-r f-nw f-at f-ct f-js bb-i-01 c-b-itrwhite2 $$css'>
+                    <div class="w-05">$$key</div>
+                    <div class="w-05">$$value</div>
+                </div>
+            </repeater>
         </div>
-        <div class="rt h-p10 ns  graytr rad-t-05  ">
-            <div class="ab h-p50 l-n0025 sub-f   t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                helpers
-            </div>
+    </div>
+    <div class="rt h-p10 ns  graytr rad-t-05  ">
+        <div class="ab h-p50 l-n0025 sub-f   t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            helpers
         </div>
-        <div class="rt h-p30 ns ">
-            <div class="ab h-p50 l-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                create
-            </div>
-        </div>
-        <div class="rt h-p70 ns  graytr">
-            <div class="ab h-p50 l-n0025  sub-f t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                items
-            </div>
-        </div>
-        <div class="rt h-p10 ns rad-b-05">
-            <div class="ab h-p50 l-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
-                publish
-            </div>
-        </div>
+        <iloader 
+        page="item"
+        path="/src/coms/" 
+        params="{icon:'settings',text:'Parameters',css:'$$itemDefaultCss'}"></iloader>
+      
 
     </div>
- 
+    <div class="rt h-p30 ns ">
+        <div class="ab h-p50 l-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            create
+        </div>
+        <div class="mt-0025"></div>
+        <iloader 
+         page="item"
+         path="/src/coms/" 
+         params="{icon:'line_curve',text:'3D Curve',css:'$$itemDefaultCss'}"></iloader>
+         <div class="m-0025 ctrwhite2 rad-05 fs-01 h-0005"></div>
+        
+        
+    </div>
+    <div class="rt h-p70 ns  graytr">
+        <div class="ab h-p50 l-n0025  sub-f t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            items
+        </div>
+    </div>
+    <div class="rt h-p10 ns rad-b-05">
+        <div class="ab h-p50 l-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
+            publish
+        </div>
+    </div>
+
+</div>
+/// background script
+<script>
+
+
+    var _$$TID_create = function(){
+        
+
+    };
+
+</script>

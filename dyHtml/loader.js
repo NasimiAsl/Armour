@@ -215,7 +215,7 @@ var dyHtml = {
       }, null, isLocal);
     }
   }
-  , replace: function (tid, data, template) {
+  , loader: function (tid, data, template) {
 
     if (typeof (tid) != "number") {
 
@@ -227,7 +227,7 @@ var dyHtml = {
 
     if (!TsID[tid]) {
 
-      console.log('error :', tid + ' not found component!');
+      console.log('Error Replace:', tid + ' not found component!');
       return;
     }
 
@@ -301,12 +301,17 @@ function initInnerContent(d, fn, fs, pms, fe) {
 
 
   d = d
-    .replaceAll(
-      "<loader",
-      `<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
-    AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-        9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)"`
-    ).replaceAll(
+  .replaceAll(
+    "<loader",
+    ` <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
+  AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+      9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)"`
+  ) .replaceAll(
+    "<iloader",
+    `<div ><img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
+  AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
+      9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)"`
+  ).replaceAll(
       "<repeater",
       `<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
     AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
@@ -324,7 +329,8 @@ function initInnerContent(d, fn, fs, pms, fe) {
     AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
         9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageDynamic(this,$$TID)" /><textarea class="hdn-i" `
     )
-    .replaceAll("></loader>", ` />`)
+    .replaceAll("></loader>", ` /> `)
+    .replaceAll("></iloader>", ` /></div>`)
     .replaceAll("</repeater>", `</textarea>`)
     .replaceAll("$$root", dy.basePath)
     .replaceAll("$$src=", "src=")
@@ -480,7 +486,7 @@ window.elementPageRepeat = function (th, tid, noNeedParse) {
     var par = th.parentNode;
     par.iden = tid;
 
-  console.log(TsID[tid],tid)
+   
   if (TsID[tid] && TsID[tid].name)
     par.name = TsID[tid].name;
 
@@ -541,8 +547,7 @@ window.elementPageSwitch = function (th, tid, noNeedParse) {
 
   var par = th.parentNode;
   par.iden = tid;
-
-  console.log(TsID[tid],tid)
+ 
   if (TsID[tid] && TsID[tid].name)
     par.name = TsID[tid].name;
  

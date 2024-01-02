@@ -37,6 +37,38 @@ armour.prototype = {
 
         return gb;
     },
+    view3D: function (eng, pos, tag) {
+        if (pos)
+            eng.camera.position = BABYLON.Vector3(pos.x, pos.y, pos.z);
+
+        if (tag)
+            eng.camera.setTarget(BABYLON.Vector3(eng.camera.position.x + def(tag.x, 0),
+                eng.camera.position.y + def(tag.y, 0),
+                eng.camera.position.z + def(tag.z, 0)));
+
+    },
+    viewAngle: function (eng, pos , animated) {
+        
+
+        if(animated ){
+
+        }
+        else { 
+           
+            if(pos.x || pos.y || pos.z)
+            {
+                eng.camera.setTarget(BABYLON.Vector3( def(pos.x, eng.camera._currentTarget.x),
+                eng.camera.position.y + def(pos.y,  eng.camera._currentTarget.y),
+                eng.camera.position.z + def(pos.z,  eng.camera._currentTarget.z)));
+            }
+            if(pos.a != undefined)eng.camera.alpha = pos.a;
+            if(pos.b!= undefined)eng.camera.beta = pos.b;
+            if(pos.r!= undefined)eng.camera.radius = pos.r;
+            if(pos.f!= undefined)eng.camera.fov = pos.f;
+            if(pos.mn!= undefined)eng.camera.minZ = pos.mn;
+            if(pos.mx!= undefined)eng.camera.maxZ = pos.mx; 
+        } 
+    },
     initCamera: function (scene, setting) {
         var scene = this.scene;
         // This creates and positions a free camera (non-mesh)
@@ -70,7 +102,7 @@ armour.prototype = {
             scene.KeyAlt = event.altKey;
             scene.KeyCtrl = event.ctrlKey;
 
-          
+
 
 
             if (event.keyCode == 87) scene.KeyW = 1;
@@ -113,7 +145,7 @@ armour.prototype = {
             if (event.keyCode == 69) scene.KeyE = 0;
             if (event.keyCode == 38) scene.KeyUp = 0;
             if (event.keyCode == 90) scene.KeyZ = 0;
-            
+
             if (event.keyCode == 40) scene.KeyDown = 0;
             if (event.keyCode == 37) scene.KeyLeft = 0;
             if (event.keyCode == 39) scene.KeyRight = 0;
@@ -236,56 +268,56 @@ GB.models = {
                 p2: { x: -setting.w * 0.5, z: 0, y: -setting.h * 0.5 }
             })).Connect(geo, null, null, setting.flip);
     },
-    helper_surface_pow : function (setting /*{seg:number}*/, geo) {
-        if(!geo) return {
-            seg_segment_1_100:20,
-            size:10,
-            dx_arcx_bol:true,
-            dz_arcz_bol:true,
-            nx_arcnx_bol:true,
-            nz_arcnz_bol:true,
-            n_power:1.0,
-            l_level:1.0 
+    helper_surface_pow: function (setting /*{seg:number}*/, geo) {
+        if (!geo) return {
+            seg_segment_1_100: 20,
+            size: 10,
+            dx_arcx_bol: true,
+            dz_arcz_bol: true,
+            nx_arcnx_bol: true,
+            nz_arcnz_bol: true,
+            n_power: 1.0,
+            l_level: 1.0
         };
 
         ind = 0;
-        
-        var size = setting.size; 
-        var rad = setting.rad; 
+
+        var size = setting.size;
+        var rad = setting.rad;
         var rim = new GB.Rims();
-        var cus = def(setting.cus,function(p,op){
-    
+        var cus = def(setting.cus, function (p, op) {
+
             var x = p.x;
             var z = p.z;
-            if(setting.dz && z >0 ) z = 0; 
-            if(setting.dx && x >0) x = 0; 
-            if(setting.nz && z <0) z = 0; 
-            if(setting.nx && x <0) x = 0; 
-    
-              var v =  pow(pow( x/size)+pow( z/ size),1) ;
-    
-              p.y = Math.sign(v)*rad*pow(abs(v),def(setting.n,1.))*def(setting.l,1.);
-    
-              p.y = max(-size*0.5,p.y);
-    
-             return p;
-         });
-    
-    
-        for(var j=0;j<=setting.seg;j++){
-    
-            rim.UV(function(p,i,s){ return {u:i/setting.seg,v:j/setting.seg};});
-            rim.PushRim(geo,{
-                count:setting.seg+1,
-                point:function(p ,i){
-                    p.x =  size*i/setting.seg- size*0.5;
-                    p.z =  size*j/setting.seg- size*0.5;
+            if (setting.dz && z > 0) z = 0;
+            if (setting.dx && x > 0) x = 0;
+            if (setting.nz && z < 0) z = 0;
+            if (setting.nx && x < 0) x = 0;
+
+            var v = pow(pow(x / size) + pow(z / size), 1);
+
+            p.y = Math.sign(v) * rad * pow(abs(v), def(setting.n, 1.)) * def(setting.l, 1.);
+
+            p.y = max(-size * 0.5, p.y);
+
+            return p;
+        });
+
+
+        for (var j = 0; j <= setting.seg; j++) {
+
+            rim.UV(function (p, i, s) { return { u: i / setting.seg, v: j / setting.seg }; });
+            rim.PushRim(geo, {
+                count: setting.seg + 1,
+                point: function (p, i) {
+                    p.x = size * i / setting.seg - size * 0.5;
+                    p.z = size * j / setting.seg - size * 0.5;
                     return cus(p);
                 }
             });
             rim.Connect(geo);
-    
+
         }
-    
+
     }
 };

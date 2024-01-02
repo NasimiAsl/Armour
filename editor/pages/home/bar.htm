@@ -14,27 +14,38 @@
     </div>
 
     <div id="current_surface" onclick=" this._view = def(this._view,0); 
-    dyHtml.replace(this, (++this._view )%4);applyView(this._view);" title="Active Surface Direction"
+    this._view = ( this._view +1)%4;
+    dyHtml.loader(this,this._view);applyView(this._view);" title="Active Surface Direction"
         class=" p-0005 mt-01 prm-t-h sec-t fs-05     f-center">
-        <switcher oncreate="  item=0;" params="{}">
+        <switcher oncreate="  item=3;" params="{}">
             XZ
             $$next-case
             XY
             $$next-case
             ZY
             $$next-case
-            PP
+            3D
         </switcher>
     </div>
 </div>
 /// background script
 <script>
-    function applyView(item) {
-
+    function applyView(item) {  
 
         switch (item) {
             case 0: {
-
+                main3D.viewAngle(main3D,{a:0,b:0.});
+                break;
+            } 
+            case 1: {
+                main3D.viewAngle(main3D,{a:PI/2.,b:0.});
+                break;
+            }
+            case 2: {
+                main3D.viewAngle(main3D,{a:PI ,b:PI/2.});
+                break;
+            } case 3: {
+                main3D.viewAngle(main3D,{a:PI/4.,b:PI/4.});
                 break;
             }
         }

@@ -160,7 +160,7 @@ local = {
     init: function (eng) {
 
 
-        eng.maker({}, GB.models.sample, function (me) { me.Light({ phonge: 1 }); return me });
+        // eng.maker({}, GB.models.sample, function (me) { me.Light({ phonge: 1 }); return me });
 
         this.applyEvent(eng, eng.scene);
         // eng.camera.attachControl(eng.canvas, true);
@@ -189,9 +189,24 @@ local = {
                 if(li2 > 0.95 ) li2 = (li2-0.95)*20.0; else li2 = 0.; 
                 li2 *=len;  
             }   
+
+            float len_1 = 1.-min(1.,max(0.,length(wps- camera)/5.)); 
+            float len3 = 1.-min(1.,max(0.,length(wps- camera)/500.)); 
+            li*=len3*0.5;
+
+            float li3 = 0.;
             
-            result = vec4( vec3 (li+0.5 ,0.5 ,0.5+0.5*li2),  
-                 0.5*max(li,li2)   );
+            if(len_1 > 0.){
+                li3 = pow(cos(100.*0.2*3.14159265*pos.x),9.0); 
+                li3 = max(li3 , pow(cos(100.*0.2*3.14159265*pos.z),9.0)); 
+                if(li3 > 0.95 ) li3 = (li3-0.95)*20.0; else li3 = 0.; 
+                li3 *=len_1;  
+            }   
+            
+            result = vec4( vec3(li3)*0.1+vec3 (li  +(pos.x>0.?0.75:0.), (pos.z>0.?0.75:0.) ,0.5+0.5*li2),  
+                 0.5*max(li,li2) +li3*0.1*len_1  );
+
+            if(pos.x> 0. && pos.z> 0. && pos.x< 5. && pos.z< 5.  ) result = vec4(vec3(1.),result.w+0.05);
 
             `).Back();
             return me;
@@ -218,6 +233,7 @@ local = {
 
         this.cameraRotation(eng, 0, 0, 1);
         this.cameraMovement(eng, 0, 0, 1);
+        
 
         __log('scene is Ready.');
 
