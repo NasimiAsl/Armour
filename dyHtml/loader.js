@@ -215,12 +215,38 @@ var dyHtml = {
       }, null, isLocal);
     }
   }
-  , loader: function (tid, data, template) {
+  ,append:function(par,itm,page,path,item,template ){
+    var div = document.createElement('div');
 
-    if (typeof (tid) != "number") {
+    var data = itm;
+    data.type = itm.type;
+    data.name = i;
+    data.title = itm.title;
 
-      if (!tid || !tid.iden) {
-        TsID[++temp_baseIdentity] = { ctrl: tid };
+    div.className = 'w-full';
+
+    data.page = page;
+    data.path = path;
+    data.item = def(itm.item,1) ;
+
+    div.data = data;
+    console.log(div.data);
+
+     par.appendChild(div); 
+ 
+
+
+    dyHtml.loader(div, data,template);
+  }
+  , loader: function (tid, data, template) { 
+      
+
+    if (   typeof (tid) != "number") {
+
+      if (!tid || !tid.iden) { 
+
+        TsID[++temp_baseIdentity] = { ctrl:tid  };
+       
         tid = temp_baseIdentity;
       } else tid = (tid.iden);
     }
@@ -298,10 +324,12 @@ function initInnerContent(d, fn, fs, pms, fe) {
   fs = def(fs, function (d) {
     return d;
   });
+ 
+  
 
 
   d = d
-  .replaceAll(
+ .replaceAll(
     "<loader",
     ` <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
   AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO

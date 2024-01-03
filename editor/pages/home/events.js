@@ -143,7 +143,7 @@ local = {
                 th.redo();
             }
 
-            __log(event.keyCode);
+           // __log(event.keyCode);
 
             scene.keyU(event)
         });

@@ -1,7 +1,8 @@
 <script>
 
     $$_data = {
-        itemDefaultCss :'c-htrwhite2 mb-0005 rad-05 prm-t-h sec-t' 
+        itemHelperCss: 'c-htrwhite2 mb-0005 rad-05 prm-t-h sec-t',
+        itemDefaultCss: 'c-htrwhite2 mb-0005 rad-05 prm-t-h c-tblue'
     };
 
     $$_help = [
@@ -41,27 +42,27 @@
         <div class="ab h-p50 l-n0025 sub-f   t-p50 w-mx-00 h-mx-00 f-center rotn90">
             helpers
         </div>
-        <iloader 
-        page="item"
-        path="/src/coms/" 
-        params="{icon:'settings',text:'Parameters',css:'$$itemDefaultCss'}"></iloader>
-      
-
+        <iloader page="item" path="/src/coms/"
+            params="{click:' _$$TID_create()',icon:'settings',text:'Parameters',css:'$$itemDefaultCss'}"></iloader>
+        <iloader page="item" path="/src/coms/"
+            params="{click:' _$$TID_upload()',icon:'deployed_code',text:'import glb',css:'$$itemHelperCss'}"></iloader>
     </div>
+
     <div class="rt h-p30 ns ">
         <div class="ab h-p50 l-n0025 sub-f  t-p50 w-mx-00 h-mx-00 f-center rotn90">
             create
         </div>
         <div class="mt-0025"></div>
-        <iloader 
-         page="item"
-         path="/src/coms/" 
-         params="{icon:'line_curve',text:'3D Curve',css:'$$itemDefaultCss'}"></iloader>
-         <div class="m-0025 ctrwhite2 rad-05 fs-01 h-0005"></div>
-        
-        
+        <iloader page="item" path="/src/coms/"
+            params="{click:' _$$TID_create()',icon:'line_curve',text:'3D Curve',css:'$$itemDefaultCss'}"></iloader>
+        <div class="m-0025 ctrwhite2 rad-05 fs-01 h-0005"></div>
+        <iloader page="item" path="/src/coms/"
+        params="{click:' _$$TID_helperFace()',icon:'check_box_outline_blank',text:'Face',css:'$$itemHelperCss'}"></iloader>
+        <iloader page="item" path="/src/coms/"
+        params="{click:' _$$TID_helperFace()',icon:'line_start_circle',text:'Node',css:'$$itemHelperCss'}"></iloader>
+  
     </div>
-    <div class="rt h-p70 ns  graytr">
+    <div class="rt h-p70 ns items  graytr">
         <div class="ab h-p50 l-n0025  sub-f t-p50 w-mx-00 h-mx-00 f-center rotn90">
             items
         </div>
@@ -76,9 +77,132 @@
 /// background script
 <script>
 
+    var _rim_iden = 0;
+    var _rim_sel = 0;
+    var _rims = [];
 
-    var _$$TID_create = function(){
-        
+    _saveRim = function () {
+
+        localStorage['_rim_iden' + (location.search)] = JSON.stringify(_rims);
+
+    }
+    _clearRim = function () {
+
+        localStorage['_rim_iden' + (location.search)] = JSON.stringify({});
+        location.reload();
+
+    }
+
+    _loadRim = function () {
+
+        try {
+            if (localStorage['_rim_iden' + (location.search)]) {
+                _rims = JSON.parse(localStorage['_rim_iden' + (location.search)]);
+
+                for (var i in _rims) {
+                    _rim_iden = i;
+                    if (_rims[i] && !_rims[i].deleted)
+                        _$$TID_create(i);
+
+                }
+            }
+        } catch (e) { console.log('Error Storage', e); }
+
+    }
+
+    setTimeout(function () { _loadRim() }, 500);
+
+    var _$$TID_change = function (th) {
+        var iden = parent2(th).id.split('_')[1].valueOf() * 1;
+        _rims[iden].name = th.value;
+
+        _saveRim();
+    }
+
+
+    var _$$TID_delete = function (th) {
+        if (confirm('are you wanna remove item?')) {
+            var iden = parent2(th).id.split('_')[1].valueOf() * 1;
+            _rims[iden] = { deleted: 1 };
+            parent2(th).remove();
+            _saveRim();
+
+        }
+
+    }
+
+
+    var _$$TID_call = function (th) {
+
+        var iden = th.id.split('_')[1].valueOf() * 1;
+
+        _rims[iden] = def(_rims[iden], {});
+
+        var _form = {
+            PID: iden,
+            path: '/src/coms/',
+            page: 'json',
+            css: 'w-full f f-c f-at f-ct f-js',
+            items: {
+                seg: {
+                    PID: iden,
+                    title: 'segment',
+                    type: 'range',
+                    min: 10,
+                    max: 100,
+                    step: 1,
+                    input: function (value) {
+
+                        _rims[iden]['seg'] = value;
+                        _saveRim()
+                    },
+                    value: def(_rims[iden]['seg'], 0)
+                }
+            }
+        };
+
+
+        if (_rim_sel == iden) {
+            _rim_sel = 0;
+            th.classList.remove('c-iorg');
+
+            first('.properties').innerHTML = '';
+
+        } else {
+            _rim_sel = iden;
+            all('.__item', function (at) {
+                at.classList.remove('c-iorg');
+            }
+                , function () {
+                    th.classList.add('c-iorg');
+                    dyHtml.loader(first('.properties'), _form);
+                });
+        }
+
+    }
+
+    var _$$TID_create = function (id) {
+
+        if (!id)
+            setTimeout(() => {
+                if (first('#iden_' + _rim_iden))
+                    _$$TID_call(first('#iden_' + _rim_iden))
+            }, 500);
+
+        id = id ? id : ++_rim_iden;
+
+        _rims[id] = def(_rims[id], { name: ' ... ' });
+
+        dyHtml.append(first('.items'), {
+            iden: id, type: 1,
+            delete: '_$$TID_delete( this);',
+            change: '_$$TID_change( this);',
+            click: '_$$TID_call( this);',
+            icon: 'line_curve', text: _rims[id].name,
+            css: '__item c-htrwhite2 mb-0005 rad-05 prm-t-h sec-t'
+        }, 'item', '/src/coms/');
+
+        _saveRim();  
 
     };
 

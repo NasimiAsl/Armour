@@ -78,6 +78,9 @@ function _for_r(ar, _do, e, b) {
 function parent(p, s) {
   p = def(p, document);
 
+  if(!s) return p.parentNode ;
+
+
   var rl = p.parentNode.querySelector(s);
 
   return rl;
@@ -85,16 +88,20 @@ function parent(p, s) {
 function parent2(p, s) {
   p = def(p, document);
 
+  if(!s) return p.parentNode .parentNode;
+
+
   var rl = p.parentNode.parentNode.querySelector(s);
 
   return rl;
 
 }
-function parent2(p, s) {
+function parent3(p, s) {
   p = def(p, document);
 
-  var rl = p.parentNode.parentNode.parentNode.querySelector(s);
+  if(!s) return p.parentNode.parentNode.parentNode;
 
+  var rl = p.parentNode.parentNode.parentNode.querySelector(s); 
   return rl;
 
 }
@@ -206,8 +213,10 @@ function dc(v) {
 };
 
 function typeKey(event,s,n) { 
+ 
 
   switch (event.keyCode) {
+    
 
     case 8: { s.pop(); }
     case 46: { s.pop(); }
@@ -221,6 +230,7 @@ function typeKey(event,s,n) {
     case 55:if(n%2==0)s += '7'; break;
     case 56:if(n%2==0)s += '8'; break;
     case 57:if(n%2==0)s += '9'; break;
+    case 110:if(n%2==0)s += '.'; break;
 
     case 96: if(n%2==0) s += '0'; break;
     case 97: if(n%2==0) s += '1'; break;
@@ -259,6 +269,7 @@ function typeKey(event,s,n) {
     case 88: if(t%3==0)s += 'x'; break;
     case 89: if(t%3==0)s += 'y'; break;
     case 90: if(t%3==0)s += 'z'; break;
+    case 190: if(t%3==0 || t%2==0)s += '.'; break;
 
     
 

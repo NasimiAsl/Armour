@@ -1,8 +1,25 @@
-<div onclick="$$click" class="f f-r f-at f-ct f-jb $$css">
+<script>
+    $$_type =  ('$$type' != '$'+'$type'  ? '$$type'.valueOf()*1 :0);
+    $$_delete = ('$$delete' != '$'+'$delete'  ? '$$type'.valueOf()*1 :0);
+</script>
+/// main content
+<div  id="iden_$$iden" onclick="$$click" class="rt f f-r f-at f-ct f-jb $$css">
     <div class="fs-05   rad-05 prm-t p-0005   mr-0025  icon   f-center">
         $$icon
     </div>
-    <div class="fs-04 w-full f  f-r f-ac f-cc f-js">
-        $$text
+    <div class="fs-04 w-full ns f owf  f-r f-ac f-cc f-js">
+        <switcher params="{}" oncreate="item=$$_type;">
+            <div>$$text</div>
+            $$next-case
+            <input type="text" readonly="readonly" ondblclick="this.removeAttribute('readonly');" value="$$text" class="$$css c-i-htrans ctrans w-full ba-i-01 c-b-itrans " onkeydown=" 
+             " onkeyup=" var th = this;
+              if(event.keyCode ==13){
+                $$change
+
+                th.setAttribute('readonly','readonly');
+               }
+             " />
+             <div onclick="$$delete" class="ab  sub-f f-center r-00 t-00 h-full w-01  icon fs-04 c-twhite rad-05 c-htrwhite2">delete</div>
+        </switcher>
     </div>
 </div>
