@@ -7,31 +7,34 @@ armour.prototype = {
     scene: null,
     canvas: null,
     engine: null,
+    shader:function(mat,scene){
+      return  new BABYLONX.ShaderBuilder()
+
+        .Func(function (me) {
+            me.Setting.FragmentWorld = true;
+            me.Setting.VertexWorld = true;
+            me.Setting.Look = true;
+
+            me = me.InLine(`
+
+    vec3 wps = vec4(world*vec4(pos,1.)).xyz;
+    vec3 wnm = mat3(world)*nrm;
+    float wfs =dot(wnm, normalize(camera-wps));
+    float wfs2 = pow(  wfs*0.5,3. )*2.0;  
+
+        
+    `);
+            if (mat)
+                return mat(me);
+            return me;
+        }).BuildMaterial( scene);
+    },
 
     maker: function (op, builder, mat, init) {
 
         var gb = new BABYLONX.Geometry(GB.GeometryBase(op, builder, op.custom)).toMesh(this.scene);
 
-        gb.material = new BABYLONX.ShaderBuilder()
-
-            .Func(function (me) {
-                me.Setting.FragmentWorld = true;
-                me.Setting.VertexWorld = true;
-                me.Setting.Look = true;
-
-                me = me.InLine(`
-
-        vec3 wps = vec4(world*vec4(pos,1.)).xyz;
-        vec3 wnm = mat3(world)*nrm;
-        float wfs =dot(wnm, normalize(camera-wps));
-        float wfs2 = pow(  wfs*0.5,3. )*2.0;  
-
-            
-        `);
-                if (mat)
-                    return mat(me);
-                return me;
-            }).BuildMaterial(this.scene);
+        gb.material = armour.prototype.shader(mat,this.scene);
 
         if (init) init(gb, gb.material);
 
@@ -103,6 +106,12 @@ armour.prototype = {
             scene.KeyCtrl = event.ctrlKey;
 
 
+            if (event.keyCode == 112) scene.KeyF1 = 1;
+            if (event.keyCode == 113) scene.KeyF2 = 1;
+            if (event.keyCode == 114) scene.KeyF3 = 1;
+            if (event.keyCode == 115) scene.KeyF4= 1;
+           
+
 
 
             if (event.keyCode == 87) scene.KeyW = 1;
@@ -136,6 +145,12 @@ armour.prototype = {
 
 
             scene.key = event.key;
+
+            if (event.keyCode == 112) scene.KeyF1 = 0;
+            if (event.keyCode == 113) scene.KeyF2 = 0;
+            if (event.keyCode == 114) scene.KeyF3 = 0;
+            if (event.keyCode == 115) scene.KeyF4= 0;
+           
 
             if (event.keyCode == 87) scene.KeyW = 0;
             if (event.keyCode == 83) scene.KeyS = 0;
@@ -186,6 +201,8 @@ armour.prototype = {
 
             scene.time++;
 
+            if(scene.frame)scene.frame(scene.time);
+
 
             new BABYLONX.ShaderMaterialHelper().SetUniforms(
                 scene.meshes,
@@ -235,89 +252,4 @@ GB.rims = {
         }
     },
 
-};
-GB.models = {
-    sample: function (setting, geo) {
-        var rim = new GB.Rims();
-        rim
-            .PushSquare(geo, { sf: 'xz', w: 0, l: 0, y: 0.5 })
-            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: 0.5 }).Connect(geo)
-            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: 0.5 })
-            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: -0.5 }).Connect(geo)
-            .PushSquare(geo, { sf: 'xz', w: 1, l: 1, y: -0.5 })
-            .PushSquare(geo, { sf: 'xz', w: 0, l: 0, y: -0.5 }).Connect(geo);
-
-    },
-    faceXZ: function (setting, geo) {
-        var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
-            p1: { x: setting.w * 0.5, y: 0, z: setting.h * 0.5 },
-            p2: { x: -setting.w * 0.5, y: 0, z: setting.h * 0.5 }
-        }))
-            .UV(function (p, i, s) { return { u: 1, v: i / s } }).PushRim(geo, GB.rims.line2P({
-                p1: { x: setting.w * 0.5, y: 0, z: -setting.h * 0.5 },
-                p2: { x: -setting.w * 0.5, y: 0, z: -setting.h * 0.5 }
-            })).Connect(geo, null, null, setting.flip);
-    },
-    faceXY: function (setting, geo) {
-        var rim = new GB.Rims().UV(function (p, i, s) { return { u: 0, v: i / s } }).PushRim(geo, GB.rims.line2P({
-            p1: { x: setting.w * 0.5, z: 0, y: setting.h * 0.5 },
-            p2: { x: -setting.w * 0.5, z: 0, y: setting.h * 0.5 }
-        }))
-            .UV(function (p, i, s) { return { u: 1, v: i / s } }).PushRim(geo, GB.rims.line2P({
-                p1: { x: setting.w * 0.5, z: 0, y: -setting.h * 0.5 },
-                p2: { x: -setting.w * 0.5, z: 0, y: -setting.h * 0.5 }
-            })).Connect(geo, null, null, setting.flip);
-    },
-    helper_surface_pow: function (setting /*{seg:number}*/, geo) {
-        if (!geo) return {
-            seg_segment_1_100: 20,
-            size: 10,
-            dx_arcx_bol: true,
-            dz_arcz_bol: true,
-            nx_arcnx_bol: true,
-            nz_arcnz_bol: true,
-            n_power: 1.0,
-            l_level: 1.0
-        };
-
-        ind = 0;
-
-        var size = setting.size;
-        var rad = setting.rad;
-        var rim = new GB.Rims();
-        var cus = def(setting.cus, function (p, op) {
-
-            var x = p.x;
-            var z = p.z;
-            if (setting.dz && z > 0) z = 0;
-            if (setting.dx && x > 0) x = 0;
-            if (setting.nz && z < 0) z = 0;
-            if (setting.nx && x < 0) x = 0;
-
-            var v = pow(pow(x / size) + pow(z / size), 1);
-
-            p.y = Math.sign(v) * rad * pow(abs(v), def(setting.n, 1.)) * def(setting.l, 1.);
-
-            p.y = max(-size * 0.5, p.y);
-
-            return p;
-        });
-
-
-        for (var j = 0; j <= setting.seg; j++) {
-
-            rim.UV(function (p, i, s) { return { u: i / setting.seg, v: j / setting.seg }; });
-            rim.PushRim(geo, {
-                count: setting.seg + 1,
-                point: function (p, i) {
-                    p.x = size * i / setting.seg - size * 0.5;
-                    p.z = size * j / setting.seg - size * 0.5;
-                    return cus(p);
-                }
-            });
-            rim.Connect(geo);
-
-        }
-
-    }
 };

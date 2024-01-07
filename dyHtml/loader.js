@@ -281,13 +281,13 @@ var dyHtml = {
         elementPageRepeat(th, tid, true);
       } else {
 
-        th.attributes = {
+        th.nextElementSibling.attributes = {
           "params": { value: data },
           "path": { value: data.path },
           "page": { value: data.page },
         };
-        th.setAttribute = function (n, v) {
-          th.attributes[n] = { value: v };
+        th.nextElementSibling.setAttribute = function (n, v) {
+          th.nextElementSibling.attributes[n] = { value: v };
         };
 
         elementPageLoad(th, tid, true);
@@ -333,12 +333,12 @@ function initInnerContent(d, fn, fs, pms, fe) {
     "<loader",
     ` <img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
   AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-      9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)"`
+      9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)" /><tmp class="hdn-i" `
   ) .replaceAll(
     "<iloader",
     `<div ><img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
   AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
-      9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)"`
+      9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageLoad(this,$$TID)" /><tmp class="hdn-i"`
   ).replaceAll(
       "<repeater",
       `<img src="data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUA
@@ -357,8 +357,8 @@ function initInnerContent(d, fn, fs, pms, fe) {
     AAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO
         9TXL0Y4OHwAAAABJRU5ErkJggg==" onload="elementPageDynamic(this,$$TID)" /><textarea class="hdn-i" `
     )
-    .replaceAll("></loader>", ` /> `)
-    .replaceAll("></iloader>", ` /></div>`)
+    .replaceAll("</loader>", ` </tmp> `)
+    .replaceAll("</iloader>", ` </tmp></div>`)
     .replaceAll("</repeater>", `</textarea>`)
     .replaceAll("$$root", dy.basePath)
     .replaceAll("$$src=", "src=")
@@ -480,28 +480,31 @@ var callInitialized = function (tid, f) {
 window.elementPageLoad = function (th, tid, noNeedParse) {
 
 
+  var nxt = th.nextElementSibling;
+ 
+
   var par = th.parentNode;
   par.iden = tid; 
   if (TsID[tid] && TsID[tid].name)
     par.name = TsID[tid].name;
 
-  if (!th.attributes['page']) th.setAttribute('page', 'icon');
-  if (!th.attributes['path']) th.setAttribute('path', '/');
-  if (!th.attributes['params']) th.setAttribute('params', '{}');
+  if (!nxt.attributes['page']) nxt.setAttribute('page', 'icon');
+  if (!nxt.attributes['path']) nxt.setAttribute('path', '/');
+  if (!nxt.attributes['params']) nxt.setAttribute('params', '{}');
 
 
-  if (th.attributes['online']) th.online = js('function(p){var element = p;var me = p.event;' + th.attributes['online'].value + '}');
-  if (th.attributes['onready']) th.onready = js('function(element,model){ ' + th.attributes['onready'].value + '}');
+  if (nxt.attributes['online']) nxt.online = js('function(p){var element = p;var me = p.event;' + nxt.attributes['online'].value + '}');
+  if (nxt.attributes['onready']) nxt.onready = js('function(element,model){ ' + nxt.attributes['onready'].value + '}');
 
-   par.onready = th.onready;
+   par.onready = nxt.onready;
 
   var param;
   if (!noNeedParse)
-    param = js(th.attributes['params'].value.replaceAll('$$_', 'TsID[' + tid + '].'));
+    param = js(nxt.attributes['params'].value.replaceAll('$$_', 'TsID[' + tid + '].'));
   else
-    param = th.attributes['params'].value;
+    param = nxt.attributes['params'].value;
 
-  loadPage(th.attributes['page'].value, par, null, th.attributes['path'].value, param, th.online);
+  loadPage(nxt.attributes['page'].value, par, null, nxt.attributes['path'].value, param, nxt.online);
 
 };
 

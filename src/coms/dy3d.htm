@@ -12,9 +12,13 @@
 
     var dy_$$TID;
 
-    dyHtml.scripts(['/engine/webgl/babylon5.js',
+    dyHtml.scripts([
+        
+    '/engine/webgl/babylon5.js',
+    '/engine/webgl/glbloader.js',
         '/engine/future3d.js',
-        '/engine/armour.js'],
+        '/engine/armour.js',
+        '/editor/models.js'],
         function () {
 
             requestAnimationFrame(function () {

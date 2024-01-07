@@ -57,10 +57,12 @@
             params="{click:' _$$TID_create()',icon:'line_curve',text:'3D Curve',css:'$$itemDefaultCss'}"></iloader>
         <div class="m-0025 ctrwhite2 rad-05 fs-01 h-0005"></div>
         <iloader page="item" path="/src/coms/"
-        params="{click:' _$$TID_helperFace()',icon:'check_box_outline_blank',text:'Face',css:'$$itemHelperCss'}"></iloader>
+            params="{click:' _$$TID_helperFace()',icon:'check_box_outline_blank',text:'Face',css:'$$itemHelperCss'}">
+        </iloader> 
         <iloader page="item" path="/src/coms/"
-        params="{click:' _$$TID_helperFace()',icon:'line_start_circle',text:'Node',css:'$$itemHelperCss'}"></iloader>
-  
+            params="{click:' _$$TID_helperFace()',icon:'line_start_circle',text:'Node',css:'$$itemHelperCss'}" >
+        </iloader>
+
     </div>
     <div class="rt h-p70 ns items  graytr">
         <div class="ab h-p50 l-n0025  sub-f t-p50 w-mx-00 h-mx-00 f-center rotn90">
@@ -80,6 +82,7 @@
     var _rim_iden = 0;
     var _rim_sel = 0;
     var _rims = [];
+    var _rimsModel = [];
 
     _saveRim = function () {
 
@@ -92,6 +95,36 @@
         location.reload();
 
     }
+
+    _rim_getPoints = function (model) {
+
+        var dt = [];
+
+        for (var i in model) {
+
+            if (i.startsWith('pt_')) {
+                dt[i.split('_')[1]] = {
+                    x: model[i].position.x,
+                    y: model[i].position.y,
+                    z: model[i].position.z,
+                    p1: {
+                        x: model[i].p1.position.x,
+                        y: model[i].p1.position.y,
+                        z: model[i].p1.position.z
+                    },
+                    p2: {
+                        x: model[i].p2.position.x,
+                        y: model[i].p2.position.y,
+                        z: model[i].p2.position.z
+                    },
+
+                };
+
+            }
+
+        }
+
+    };
 
     _loadRim = function () {
 
@@ -110,7 +143,7 @@
 
     }
 
-    setTimeout(function () { _loadRim() }, 500);
+
 
     var _$$TID_change = function (th) {
         var iden = parent2(th).id.split('_')[1].valueOf() * 1;
@@ -131,6 +164,127 @@
 
     }
 
+    var _$$TID_Select = function (iden) {
+
+        if (iden != 0) {
+            main3D.helper_click = function (x, y, p) {
+
+                if (p.hit) {
+
+                    if (!main3D.point_h) {
+                        main3D.point_h = main3D.maker({ seg: 10, radius: 0.01 }, GB.models.sphare, function (me) {
+                            me.Solid({ r: 1 })
+                                .Event(2, 'result.xyz = vec3(1.,0.5,0.);')
+                                .Event(3, 'result.xyz = vec3(1.,1.0,0.);')
+
+                                ; return me
+                        });
+                        main3D.point_h.visibility = 0;
+                        main3D.point_h.isPickable = 0;
+                    }
+
+                    if (!main3D.point_t) {
+                        main3D.point_t = main3D.maker({ seg: 10, radius: 0.006 }, GB.models.sphare, function (me) {
+                            me.Solid({ b: 1 })
+                                .Event(2, 'result.xyz = vec3(1.,0.5,0.);')
+                                .Event(3, 'result.xyz = vec3(1.,1.0,0.);')
+
+                                ; return me
+                        });
+
+                        main3D.point_t.visibility = 0;
+                        main3D.point_t.isPickable = 0;
+
+                        main3D.point_l = main3D.maker({s:10, d: 1, w: 0.0015, h: 0.0015, x: 0., y: 0. , z: 1.0  }, GB.models.column, function (me) {
+                            me.Solid({ r: 1, g: 1, b: 1, a: 0.2 })
+                            .Transparency()
+                                ; return me
+                        });
+
+                        main3D.point_l.visibility = 0;
+                        main3D.point_l.isPickable = 0;
+
+                    }
+
+                    if (!_rimsModel[iden]) _rimsModel[iden] = {
+                        index: 0,
+
+                    };
+
+                    var pickNormal = p.getNormal(true /** world normal */);
+
+
+                    var model = main3D.point_h.clone();
+                    model.visibility = 1;
+                    model.isPickable = 1;
+                    model.dragable = 1;
+                    model.isPoint = 1;
+
+                    model.p1 = main3D.point_t.clone();
+                    model.p1_line = main3D.point_l.clone();
+                    model.p2 = main3D.point_t.clone();
+                    model.p2_line = main3D.point_l.clone();
+
+                    model.p1.isPoint = 1;
+                    model.p2.isPoint = 1;
+
+                    model.p1.left = 1;
+                    model.p1.isSub = 1;
+                    model.p2.right = 1;
+                    model.p2.isSub = 1;
+
+                    model.updateLines = function (model) {
+                        var p1 = {
+                            x: model.p1.position.x,
+                            y: model.p1.position.y,
+                            z: model.p1.position.z
+                        };
+                        var lp1 = pow(pow(p1.x) + pow(p1.y) + pow(p1.z), 0.5);
+                        model.p1_line.scaling.z = lp1 ;
+
+                        var p2 = {
+                            x: model.p2.position.x,
+                            y: model.p2.position.y,
+                            z: model.p2.position.z
+                        };
+                        var lp2 = pow(pow(p2.x) + pow(p2.y) + pow(p2.z), 0.5);
+                         model.p2_line.scaling.z = lp2 ;
+
+                        model.p1_line.lookAt(model.p1.position);
+                        model.p2_line.lookAt(model.p2.position);
+                    };
+
+                    model.p1.visibility = 1;
+                    model.p1_line.visibility = 1;
+                    model.p1.isPickable = 1;
+                    model.p1.dragable = 1;
+                    model.p1.position.x = .1;
+
+                    model.p2.visibility = 1;
+                    model.p2_line.visibility = 1;
+                    model.p2.isPickable = 1;
+                    model.p2.dragable = 1;
+                    model.p2.position.x = -0.1;
+
+                    model.p1.parent = model;
+                    model.p2.parent = model;
+                    model.p1_line.parent = model;
+                    model.p2_line.parent = model;
+
+                    model.position.x = p.pickedPoint.x;
+                    model.position.y = p.pickedPoint.y;
+                    model.position.z = p.pickedPoint.z;
+
+                    model.updateLines(model);
+
+                    _rimsModel[iden].index++;
+
+                    _rimsModel[iden]['pt_' + _rimsModel[iden].index] = model;
+                }
+
+            };
+        }
+    }
 
     var _$$TID_call = function (th) {
 
@@ -164,12 +318,14 @@
 
         if (_rim_sel == iden) {
             _rim_sel = 0;
+            _$$TID_Select(0);
             th.classList.remove('c-iorg');
 
             first('.properties').innerHTML = '';
 
         } else {
             _rim_sel = iden;
+            _$$TID_Select(iden);
             all('.__item', function (at) {
                 at.classList.remove('c-iorg');
             }
@@ -202,7 +358,7 @@
             css: '__item c-htrwhite2 mb-0005 rad-05 prm-t-h sec-t'
         }, 'item', '/src/coms/');
 
-        _saveRim();  
+        _saveRim();
 
     };
 

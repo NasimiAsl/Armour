@@ -31,7 +31,7 @@ local = {
         obj.rotation.x = obj.oldRotation.x - dx * 0.01;
         obj.rotation.y = obj.oldRotation.y - dy * 0.01;
 
-         
+
 
     },
     cameraRotation: function (eng, dx, dy, start) {
@@ -45,7 +45,7 @@ local = {
             };
         }
 
-        if(start) return;
+        if (start) return;
 
         eng.camera.alpha = th.oldRotation.a - dx * 0.01;
         eng.camera.beta = min(PI, max(0, th.oldRotation.b - dy * 0.01));
@@ -53,7 +53,7 @@ local = {
         th.updateFaceHelperByCamera(eng.camera, eng.locker);
 
 
-    }, 
+    },
     cameraRadiusChange: function (eng, dx, dy, start) {
 
         var th = this;
@@ -66,12 +66,12 @@ local = {
             };
         }
 
-        if(start) return; 
+        if (start) return;
 
-        eng.camera.radius = th.oldRotation.r - dy * (0.03   );
-        eng.camera.fov = min(1.6,max(0.3 , th.oldRotation.f -  dx * (0.01   )*0.1 ));
-      
-        th.updateFaceHelperByCamera(eng.camera, eng.locker); 
+        eng.camera.radius = th.oldRotation.r - dy * (0.03);
+        eng.camera.fov = min(1.6, max(0.3, th.oldRotation.f - dx * (0.01) * 0.1));
+
+        th.updateFaceHelperByCamera(eng.camera, eng.locker);
 
     },
     objMovement: function (eng, obj, dx, dy, start, dep, flat) {
@@ -84,7 +84,7 @@ local = {
                 z: obj.position.z
             };
         }
-        
+
 
         if (!dep) {
 
@@ -116,7 +116,7 @@ local = {
 
         }
 
-      
+
 
 
     },
@@ -131,7 +131,7 @@ local = {
             };
         }
 
-        if(start) return;
+        if (start) return;
 
         var dt = {
             x: eng.locker.top.absolutePosition.x - eng.locker.absolutePosition.x,
@@ -160,14 +160,43 @@ local = {
     init: function (eng) {
 
 
-        // eng.maker({}, GB.models.sample, function (me) { me.Light({ phonge: 1 }); return me });
+
+
 
         this.applyEvent(eng, eng.scene);
         // eng.camera.attachControl(eng.canvas, true);
 
-        eng.locker = eng.maker({ w: 100, h: 100 }, GB.models.faceXZ);
-        eng.locker.visibility = 0.;
+        eng.locker = eng.maker({ w: 1000, h: 1000 }, GB.models.faceXZ, function (me) {
+
+            me.Transparency().InLine(`
+
+            float li =  pow(cos(10.*0.2*3.14159265*pos.x),10.0); 
+            li = max(li ,  pow(cos(10.*0.2*3.14159265*pos.z),10.0));
+            if(li > 0.95  ) li = (li-0.95 )*20.0; else li = 0.;
+
+            float len = 1.-min(1.,max(0.,length(wps- camera)/10.)); 
+            float len2 = 1.-min(1.,max(0.,length(wps- camera)/50.)); 
+            li*=len2*0.5;
+
+            float li2 = 0.;
+            
+            if(len >0.){
+                li2 = pow(cos(1000.*0.2*3.14159265*pos.x),9.0); 
+                li2 = max(li2 , pow(cos(1000.*0.2*3.14159265*pos.z),9.0)); 
+                if(li2 > 0.95 ) li2 = (li2-0.95)*20.0; else li2 = 0.; 
+                
+            }    
+            
+            result = vec4(  vec3(1.,0.,0.),  
+                  0.15*mix(li,li2, len)+li*0.05   );
+
+          
+            `).Back();
+            return me;
+        });
+
         eng.locker.isPickable = false;
+        eng.locker.visibility = 0.0;
 
         eng.grid = eng.maker({ w: 100, h: 100 }, GB.models.faceXZ, function (me) {
 
@@ -208,7 +237,7 @@ local = {
 
             if(pos.x> 0. && pos.z> 0. && pos.x< 5. && pos.z< 5.  ) result = vec4(vec3(1.),result.w+0.05);
 
-            `).Back();
+            `).Event(2, 'result.w *=0.4;').Back();
             return me;
         });
         eng.grid.isPickable = false;
@@ -233,9 +262,62 @@ local = {
 
         this.cameraRotation(eng, 0, 0, 1);
         this.cameraMovement(eng, 0, 0, 1);
-        
+
 
         __log('scene is Ready.');
+
+        _loadRim();
+
+
+        loadGlbSampleModel(eng.scene, '/editor/sample/', 'vans_shoe.glb', function (meshes) {
+
+            var mesh = new BABYLON.Mesh(eng.scene);
+
+            meshes[0].parent = mesh;
+            var scale = 100;
+
+            mesh.scaling.x = scale;
+            mesh.scaling.y = scale;
+            mesh.scaling.z = scale;
+
+            mesh.rotation.x = -15 * deg;
+            mesh.rotation.y = 15 * deg;
+            mesh.rotation.z = -20 * deg;
+
+
+            var mat = armour.prototype.shader(function (me) {
+                me.InLine(` 
+                
+                float dt =  dot(wnm,normalize( camera-wps));
+                float fs = 1.-dt;
+                float sc = 10.*3.14159265;
+
+                float lin = 0.25
+                +0.25*min(1.,max(0.,sin(wps.x*sc)*2.0))
+                +0.25*min(1.,max(0.,sin(wps.z*sc)*2.0))
+                +0.25*min(1.,max(0.,sin(wps.y*sc)*2.0));
+
+                result = vec4( vec3(lin)+0.25*dt-0.5*fs,0.25);
+           
+           `).Transparency()  ;
+                return me;
+            }, eng.scene);
+
+
+            for (var i in meshes) {
+
+                meshes[i].material = mat;
+
+                meshes[i].isHelper = true; 
+                
+
+            }
+
+
+
+
+
+        });
 
 
     },
