@@ -34,6 +34,7 @@ armour.prototype = {
 
         var gb = new BABYLONX.Geometry(GB.GeometryBase(op, builder, op.custom)).toMesh(this.scene);
 
+        if(mat)
         gb.material = armour.prototype.shader(mat,this.scene);
 
         if (init) init(gb, gb.material);

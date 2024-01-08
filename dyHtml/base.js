@@ -165,6 +165,31 @@ var E = Math.E;
 var deg = PI / 180.;
 var rad = 180. / PI;
 
+var nextIndex = function(p,i){
+  var v = false;
+  for(var j in p){
+    if(v ) return j;
+    if(j == i){
+       v = true;
+    } 
+  } 
+  return undefined; 
+}
+
+
+var prevIndex = function(p,i){
+  var v = undefined;
+  for(var j in p){
+    
+    if(j == i){
+       return v;
+    }
+    v = j; 
+  } 
+  return undefined; 
+}
+
+
 
 var mix = function (a, b, n) {
 

@@ -66,10 +66,7 @@ local = {
 
         };
 
-        scene.click = function (x, y, p) {
-
-
-
+        scene.click = function (x, y, p) {  
 
             if (main3D.helper_click)
                 main3D.helper_click(x, y, p);
@@ -123,7 +120,6 @@ local = {
 
                     clickDown.objDraged = p2.pickedMesh;
                     p2.pickedMesh.isPickable = false;
-
 
                     /// update all line helpers  
 
@@ -188,9 +184,18 @@ local = {
 
                         if (clickDown.objDraged.parent.updateLines)
                             clickDown.objDraged.parent.updateLines(clickDown.objDraged.parent);
+
+                            var model =  clickDown.objDraged.parent;
+                            GB.updateConnect( scene,
+                                _rimsModel[model.iden],
+                                 (model.index/1000).toFixed(16));
                     }
 
-                    if( clickDown.objDraged.isSub && !scene.KeyCtrl ){ 
+    
+
+                      if( clickDown.objDraged.isSub && ( scene.KeyCtrl  ) ){ 
+
+                         
 
                         if(clickDown.objDraged.left){
                             clickDown.objDraged.parent.p2.position.x = -p2.pickedPoint.x + par_pos.x;
@@ -203,11 +208,53 @@ local = {
                             clickDown.objDraged.parent.p1.position.z = -p2.pickedPoint.z + par_pos.z; 
                         }
 
-                    }
+                    } 
+
+
 
                     clickDown.objDraged.position.x = p2.pickedPoint.x - par_pos.x;
                     clickDown.objDraged.position.y = p2.pickedPoint.y - par_pos.y;
                     clickDown.objDraged.position.z = p2.pickedPoint.z - par_pos.z;
+
+
+                    if( clickDown.objDraged.isSub){
+
+                        var p1  = clickDown.objDraged.parent.p1.position;
+
+                        var lp1 = pow(pow(p1.x) + pow(p1.y) + pow(p1.z), 0.5);
+                        if(lp1 < .03){
+                            
+                            p1.x =  0.015;
+                            p1.y = 0;
+                            p1.z = 0.;
+                            clickDown.objDraged.parent.p1.solid = true;
+                            
+                        } else  clickDown.objDraged.parent.p1.solid = false;
+
+                        var p2  = clickDown.objDraged.parent.p2.position;
+
+                        var lp2 = pow(pow(p2.x) + pow(p2.y) + pow(p2.z), 0.5);
+                        if(lp2 < .03){
+                            
+                            p2.x = 0.015;
+                            p2.y = 0;
+                            p2.z = 0.005;
+                            
+                            clickDown.objDraged.parent.p2.solid = true;
+                            
+                        } else  clickDown.objDraged.parent.p2.solid = false;
+
+                    }
+
+                    if(!clickDown.objDraged.isSub){
+                        var model =  clickDown.objDraged ;
+                        GB.updateConnect( scene,
+                            _rimsModel[model.iden],
+                             (model.index/1000).toFixed(16));
+                    }
+
+
+                    
 
                     clickDown.camRotation = 0;
                     clickDown.camMovement = 0;

@@ -114,6 +114,60 @@ local = {
             obj.position.y = obj.oldMovment.y - 0.01 * (dy * dd.y);
             obj.position.z = obj.oldMovment.z - 0.01 * (dy * dd.z);
 
+           
+
+        }
+
+        if(obj.isPoint){ 
+            
+            var model =  obj ;
+            if( obj.isSub){
+                
+                model =  obj.parent; 
+
+                var par_pos = { x: 0, y: 0, z: 0 };
+
+               
+                    par_pos = {
+                        x: model.absolutePosition.x,
+                        y: model.absolutePosition.y,
+                        z: model.absolutePosition.z
+                    }; 
+
+
+
+                  if( obj.isSub && ( eng.scene.KeyCtrl  ) ){ 
+
+                     
+
+                    if(obj.left){
+                        model.p2.position.x = - obj.position.x  ;
+                        model.p2.position.y = - obj.position.y  ;
+                        model.p2.position.z = - obj.position.z  ;
+                    }else {
+                        
+                        model.p1.position.x = - obj.position.x  ;
+                        model.p1.position.y = - obj.position.y  ;
+                        model.p1.position.z = - obj.position.z  ;
+                    }
+
+                } 
+
+
+                
+
+            }
+
+            
+
+            if (obj.parent && obj.parent.updateLines)
+             obj.parent.updateLines(obj.parent); 
+
+
+
+            GB.updateConnect( eng.scene,
+                _rimsModel[model.iden],
+                 (model.index/1000).toFixed(16));
         }
 
 

@@ -173,7 +173,7 @@
 
                     if (!main3D.point_h) {
                         main3D.point_h = main3D.maker({ seg: 10, radius: 0.01 }, GB.models.sphare, function (me) {
-                            me.Solid({ r: 1 })
+                            me.Solid({ r: 1,g: 0.8,b:0.3 })
                                 .Event(2, 'result.xyz = vec3(1.,0.5,0.);')
                                 .Event(3, 'result.xyz = vec3(1.,1.0,0.);')
 
@@ -184,8 +184,8 @@
                     }
 
                     if (!main3D.point_t) {
-                        main3D.point_t = main3D.maker({ seg: 10, radius: 0.006 }, GB.models.sphare, function (me) {
-                            me.Solid({ b: 1 })
+                        main3D.point_t = main3D.maker({ seg: 10, radius: 0.008 }, GB.models.sphare, function (me) {
+                            me.Solid({r: .7,g: .7,b:.5 })
                                 .Event(2, 'result.xyz = vec3(1.,0.5,0.);')
                                 .Event(3, 'result.xyz = vec3(1.,1.0,0.);')
 
@@ -194,6 +194,17 @@
 
                         main3D.point_t.visibility = 0;
                         main3D.point_t.isPickable = 0;
+
+                        main3D.point_t2 = main3D.maker({ seg: 10, radius: 0.008 }, GB.models.sphare, function (me) {
+                            me.Solid({r: .5,g: .7,b:.7 })
+                                .Event(2, 'result.xyz = vec3(1.,0.5,0.);')
+                                .Event(3, 'result.xyz = vec3(1.,1.0,0.);')
+
+                                ; return me
+                        });
+
+                        main3D.point_t2.visibility = 0;
+                        main3D.point_t2.isPickable = 0;
 
                         main3D.point_l = main3D.maker({s:10, d: 1, w: 0.0015, h: 0.0015, x: 0., y: 0. , z: 1.0  }, GB.models.column, function (me) {
                             me.Solid({ r: 1, g: 1, b: 1, a: 0.2 })
@@ -222,7 +233,7 @@
 
                     model.p1 = main3D.point_t.clone();
                     model.p1_line = main3D.point_l.clone();
-                    model.p2 = main3D.point_t.clone();
+                    model.p2 = main3D.point_t2.clone();
                     model.p2_line = main3D.point_l.clone();
 
                     model.p1.isPoint = 1;
@@ -258,13 +269,16 @@
                     model.p1_line.visibility = 1;
                     model.p1.isPickable = 1;
                     model.p1.dragable = 1;
-                    model.p1.position.x = .1;
+                    model.p1.position.x = .015;
+                    model.p1.solid = true;
 
                     model.p2.visibility = 1;
                     model.p2_line.visibility = 1;
                     model.p2.isPickable = 1;
                     model.p2.dragable = 1;
-                    model.p2.position.x = -0.1;
+                    model.p2.position.x =  0.015;
+                    model.p2.position.z =  0.005;
+                    model.p2.solid = true;
 
                     model.p1.parent = model;
                     model.p2.parent = model;
@@ -275,11 +289,24 @@
                     model.position.y = p.pickedPoint.y;
                     model.position.z = p.pickedPoint.z;
 
-                    model.updateLines(model);
+                    model.updateLines(model);  
 
-                    _rimsModel[iden].index++;
+                    _rimsModel[iden].index++;  
 
-                    _rimsModel[iden]['pt_' + _rimsModel[iden].index] = model;
+                    model.index = _rimsModel[iden].index;
+                    model.iden =  iden ;
+                    
+
+
+                    
+
+                                    
+                                        
+                    _rimsModel[iden][ (_rimsModel[iden].index/1000).toFixed(16) ] = model;
+
+                    GB.updateConnect(main3D.scene,
+                     _rimsModel[iden],
+                      (_rimsModel[iden].index/1000).toFixed(16));
                 }
 
             };

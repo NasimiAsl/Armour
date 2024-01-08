@@ -170,12 +170,12 @@ GB.models = {
 };
 
 GB.colorMats = [];
-GB.line = function(pts,co,scene){
+GB.line = function(scene,pts,co){
     if(!GB.colorMats[co.r+'!'+co.g+'!'+co.b]){
         GB.colorMats[co.r+'!'+co.g+'!'+co.b] = 
         new BABYLONX.ShaderBuilder().Solid(co).Wired().BuildMaterial(scene);
     }
-    var ms = armour.prototype.maker({pts:pts},lineBuilder).toMesh(scene);
+    var ms = armour.prototype.maker({pts:pts},GB.models.lineBuilder) ;
     ms.material = GB.colorMats[co.r+'!'+co.g+'!'+co.b];
     return ms;
 };
@@ -225,18 +225,18 @@ GB.line_cach = [];
 
  
 
-GB.drawPath3D2Point = function(  p, p1,op) {
+GB.drawPath3D2Point = function(scene,p,p1,op) {
 
     op = def(op,{});
 
     var p_1 = p.p1.position;
-    if (p.solid) {
+    if (p.p1.solid) {
         p_1 = { x: 0, y: 0, z: 0 }
     }
 
     var p_2 = p1.p2.position;
 
-    if (p2.solid) {
+    if (p1.p2.solid) {
         p_2 = { x: 0, y: 0, z: 0 }
     }  
 
@@ -244,8 +244,8 @@ GB.drawPath3D2Point = function(  p, p1,op) {
     var st = function(p){ return p;}
 
 
-    var ps = path3D(p.position, p_1, p1.position, p_2,
-        { f:st,seg: def(p.seg,32), mode: def(op.mode,'sin') , power: def(op.power,1), level: def(op.level,1) });
+    var ps = GB.path3D(p.position, p_1, p1.position, p_2,
+        { f:st,seg: def(p.seg,32), mode: def(op.mode,'...') , power: def(op.power,1), level: def(op.level,1) });
  
 
     if(p.line) p.line.dispose();
@@ -253,6 +253,17 @@ GB.drawPath3D2Point = function(  p, p1,op) {
     var ps_1 = [p1.position];
     ps_1 = ps_1.concat(ps); 
 
-    p.line = line(ps_1,{r:1.,g:sin(p.position.x)*0.5+0.5,b:sin(p.position.z)*0.5+0.5},scene); 
+    p.line = GB.line(scene,ps_1,{r:1.,g:sin(p.position.x)*0.5+0.5,b:sin(p.position.z)*0.5+0.5} ); 
 
 };
+
+GB.updateConnect = function(scene, array, index){
+
+    
+  
+    if(prevIndex(array,index)!= 'index' &&  array[index])
+    GB.drawPath3D2Point(scene ,array[prevIndex(array,index)], array[index]);
+    if(nextIndex(array,index)!= undefined &&  array[index])
+    GB.drawPath3D2Point(scene ,  array[index],array[nextIndex(array,index)] );
+
+ };

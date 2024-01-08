@@ -229,8 +229,7 @@ var dyHtml = {
     data.path = path;
     data.item = def(itm.item,1) ;
 
-    div.data = data;
-    console.log(div.data);
+    div.data = data; 
 
      par.appendChild(div); 
  
